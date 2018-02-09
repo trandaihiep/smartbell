@@ -7,36 +7,42 @@ are made available under the terms of GNU GPL v3 which accompany this distributi
 Quản lý thao tác của camera
 
 *Contributors:
-   Tran Dai Hiep:	03-Feb-2018: Initial implementation and documentation.
+   Pham Chi Viet Hung:	08-Feb-2018: Initial implementation and documentation.
 *****************************************/
 #ifndef CAMERA_HANDLER_H_
 #define CAMERA_HANDLER_H_
 ///****************  INCLUDE ***************///
-#include "Logging.h"
+#include "../Serialize/CameraData.h"
+#include <opencv2/core.hpp>
+#include <opencv2/highgui.hpp>
+#include <opencv2/videoio.hpp>
 ///****************  DEFINE ****************///
-
+#define ERR_CAP_CLOSE 0x01  //Cap not open
+#define ERR_EMPTY_FRAME 0x02  //Empty frame
+#define ERR_EMPTY_URL 0x04
+#define ERR_NUM_4 0x08
 ///**************  NAMESPACE **************///
 
 /*
  * Class: CameraHandler
  *
- *  Quản lý thao tác của camera
+ *  Handle connect IP camera tasks
  */
-class CameraHandler: public VideoCapture {
+class CameraHandler{
 
-    
-   private: //// PRIVATE
+   private: 
         ///*************** FUCNTION **************///
-        CameraData* m_CamDt;
+        
         ///*************** VARIABLE **************///
-
-   public: //// PUBLIC
+        CameraData* m_pCamData;
+   public:
         ///*************** FUCNTION **************///
         CameraHandler();
         virtual ~CameraHandler();
-        void SetCamdata();
+        void SetCamdata(CameraData* pCamData);
         
-        void CaptureImage(const char* pztcFilePath); // Chụp hình từ máy quay
+        int CaptureImage();
+        int SaveImage();
         ///*************** VARIABLE **************///
 
 
