@@ -60,7 +60,7 @@ class LogHandler{
 
 		// Process
 		void Log(unsigned int nLogLevel, const char *pztcContent);
-
+		void Log(unsigned int nLogLevel, std:string sContent);
 		///*************** VARIABLE **************///
 
 

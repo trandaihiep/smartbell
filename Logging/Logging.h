@@ -18,6 +18,7 @@ extern LogHandler g_sLog;          // Write Log
 
 ///*************** FUCNTION **************///
 void Log(int nLogLevel, const char *pztcContent); // Ghi log
+void Log(int nLogLevel, std:string sContent); // Ghi log
 void SetLogLevel(int nLogLevel);
 
 #endif  // LogHandler

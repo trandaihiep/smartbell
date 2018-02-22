@@ -18,11 +18,15 @@ extern LogHandler g_sLog;          // Write Log
 // Description: Hiển thị và lưu lại thông tin
 // Parameters: 
 //		int nLogLevel: Cấp độ ghi thông tin 
-//      const char *pztcContent: Nội dung
+//      const char *pztcContent : Nội dung
+//      string      sContent    : Nội dung
 // Return: None
 void Log(int nLogLevel, const char *pztcContent){
     g_sLog.Log(nLogLevel, pztcContent);
 
+}
+void Log(int nLogLevel, std:string sContent){
+    g_sLog.Log(nLogLevel, sContent);
 }
 // Description: Thiết lấp mức độ hiển thị thông tin
 // Parameters: 

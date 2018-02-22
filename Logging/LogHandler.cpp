@@ -43,5 +43,9 @@ void LogHandler::Log(unsigned int nLogLevel, const char *pztcContent){
         const char *pztcLogLevel = GetLogLevelName(nLogLevel);
         printf("%s [%s]: %s",sDatetime.c_str(), pztcLogLevel, pztcContent);
     }
-    // Ghi log: Chưa code!!!
+    // Ghi log ra file: Chưa code!!!
+}
+
+void LogHandler::Log(unsigned int nLogLevel, std:string sContent){
+    Log(nLogLevel, sContent.c_str());
 }

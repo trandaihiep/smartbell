@@ -22,12 +22,66 @@ Lớp SmartBellData là lớp bao của lớp mosquitto nhằm cung cấp các g
 SmartBellData::SmartBellData()
 {
 	
-	int keepalive = 60;
-	/* Connect immediately. This could also be done by calling
-	 * mqtt_tempconv->connect(). */
-	connect(host, port, keepalive);
-};
-
+}
+// Description: 
+// Parameters: 
+//		
+// Return: None
 SmartBellData::~SmartBellData(){
 
+}
+
+// Description: Khởi tạo dữ liệu
+// Parameters: None
+//		
+// Return: true/false - Success/Failure
+bool SmartBellData::Initialize()
+{	bool bRes = true;
+	bRes &= m_dConfig.ReadConfigParam();
+	bRes &= m_dConfig.WriteConfigParam();
+	return bRes;
+}
+// // Description: Kiểm tra tính hợp lệ của dữ liệu nhận từ chuông
+// // Parameters: 
+// //		string sBellData: Dữ liệu nhận từ chuông
+// // Return: None
+// bool SmartBellData::IsInvalidBellData(string sBellData)
+// {
+// 	return true;
+// }
+
+// Description: Nhận số lượng dữ liệu chuông cửa
+// Parameters: None
+//		
+// Return: int Số lượng
+int SmartBellData::BellDataSize(){ // Get number of Bell Data queue
+	return m_qBellDataQueue.size();
+}
+
+// Description: Thêm dữ liệu chuông cửa vào
+// Parameters: 
+//		string sBellData: Dữ liệu nhận từ chuông
+// Return: None
+void SmartBellData::PushBellData(string sBellData)
+{
+	BellData dBellData;
+	dBellData.ParseBellData(sBellData);
+	if (dBellData.ParseBellData(sBellData)){// Kiểm tra tính hợp lệ
+		m_qBellDataQueue.push(dBellData);
+	}
+}
+
+// Description: Lấy và xóa dữ liệu đầu tiên
+// Parameters: None
+//		
+// Return: None
+void SmartBellData::PopBellData()
+{
+	if (!m_qBellDataQueue.empty())  {
+		BellData dBellData = m_qBellDataQueue.front();
+		m_qBellDataQueue.pop();
+		return dBellData;
+	}
+
+	return NULL;
 }

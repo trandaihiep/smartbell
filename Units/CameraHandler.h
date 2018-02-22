@@ -16,11 +16,15 @@ Quản lý thao tác của camera
 #include <opencv2/core.hpp>
 #include <opencv2/highgui.hpp>
 #include <opencv2/videoio.hpp>
+
 ///****************  DEFINE ****************///
-#define ERR_CAP_CLOSE 0x01  //Cap not open
-#define ERR_EMPTY_FRAME 0x02  //Empty frame
-#define ERR_EMPTY_URL 0x04
-#define ERR_NUM_4 0x08
+enum CaptureResult{
+    CAM_SUCCESS = 0,            // Capture success
+    CAM_ERROR_CLOSE,            // Cannot open camera
+    CAM_ERROR_EMPTY_FRAME,      // Empty frame
+    CAM_ERROR_INVALID_URL,      // Invalib url
+}
+
 ///**************  NAMESPACE **************///
 
 /*
@@ -32,17 +36,17 @@ class CameraHandler{
 
    private: 
         ///*************** FUCNTION **************///
-        
+        void SetCamdata(CameraData* pCamData);
+        void *CaptureImage();
+        int SaveImage();
         ///*************** VARIABLE **************///
         CameraData* m_pCamData;
+        pthread_t m_thrCapture;
    public:
         ///*************** FUCNTION **************///
         CameraHandler();
         virtual ~CameraHandler();
-        void SetCamdata(CameraData* pCamData);
-        
-        int CaptureImage();
-        int SaveImage();
+        int CaptureImage(CameraData* pCamData);
         ///*************** VARIABLE **************///
 
 

@@ -4,13 +4,13 @@ All rights reserved. This program and the accompanying materials
 are made available under the terms of GNU GPL v3 which accompany this distribution.
 
 * Description:
-Lớp CommunicateControl là lớp bao của lớp mosquitto nhằm cung cấp các giao thức gửi và nhận mesage trong IOT
+Lớp MQTTConnector là lớp bao của lớp mosquitto nhằm cung cấp các giao thức gửi và nhận mesage trong IOT
 
 *Contributors:
    Tran Dai Hiep:	01-Feb-2018: Initial implementation and documentation.
 *****************************************/
-#ifndef CommunicateControl_H_
-#define CommunicateControl_H_
+#ifndef MQTTConnector_H_
+#define MQTTConnector_H_
 ///****************  INCLUDE ***************///
 #include <mosquittopp.h>
 #include <functional>
@@ -24,30 +24,43 @@ Lớp CommunicateControl là lớp bao của lớp mosquitto nhằm cung cấp c
 ///**************  NAMESPACE **************///
 
 /*
- * Class: CommunicateControl
+ * Class: MQTTConnector
  *
- *  Lớp CommunicateControl là lớp bao của lớp mosquitto nhằm cung cấp các giao thức gửi và nhận mesage trong IOT
+ *  Lớp MQTTConnector là lớp bao của lớp mosquitto nhằm cung cấp các giao thức gửi và nhận mesage trong IOT
  */
-class CommunicateControl: public mosqpp::mosquittopp {
+class MQTTConnector: public mosqpp::mosquittopp {
 
 	
    private: //// PRIVATE
 		///*************** FUCNTION **************///
 		
 		///*************** VARIABLE **************///
-
+		std::string m_sGateWayListenAdr	= "";	//GateWay listen address
+		std::string m_sGateWayAlarmAdr 	= ""; 	//GateWay publish address
    public: //// PUBLIC
 		///*************** FUCNTION **************///
-		CommunicateControl(const char *id=NULL, bool clean_session=true);
-		~CommunicateControl();
+		MQTTConnector(const char *id=NULL, bool clean_session=true);
+		~MQTTConnector();
 		std::function<void(std::string)> m_strHandlerFunction;
 		void on_connect(int rc);
 		void on_message(const struct mosquitto_message *message);
 		void on_subscribe(int mid, int qos_count, const int *granted_qos);
 		void addHandler(std::function<void(std::string)> callback);
 		void publish(std::string message);
+
+
+		std::string GetGWListenAdr(){ return m_sGateWayListenAdr;};
+		void SetGWListenAdr( std::string sGateWayListenAdr){
+			m_sGateWayListenAdr	= sGateWayListenAdr;	//GateWay listen address
+		};
+		
+		std::string GetGWAlarmAdr(){ return m_sGateWayAlarmAdr;};
+		void SetGWAlarmAdr( std::string sGateWayAlarmAdr){
+			m_sGateWayAlarmAdr	= sGateWayAlarmAdr;	//GateWay publish address
+		};
+
 		///*************** VARIABLE **************///
 
 
 };
-#endif  // CommunicateControl
+#endif  // MQTTConnector

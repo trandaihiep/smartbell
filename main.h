@@ -12,8 +12,7 @@ Contributors:
 #ifndef SMARTBELL_MAIN_H_
 #define SMARTBELL_MAIN_H_
 ///****************  INCLUDE ***************///
-#include "Units/CommunicateControl.h"
-#include "util.h"
+
 #include <iostream>
 #include <vector>
 #include <opencv2/core.hpp>
@@ -22,7 +21,11 @@ Contributors:
 #include <chrono>
 #include <thread>
 #include <ctime>
-#include "logging.h"
+
+
+#include "MQTTConnector.h"
+#include "util.h"
+#include "Logging.h"
 
 ///****************  DEFINE ****************///
 #define THRES 0
@@ -31,15 +34,18 @@ using namespace cv;
 using namespace std;
 using namespace std::chrono;
 ///***************  VARIABLE **************///
-extern static SmartBellData* g_pSmartBellData = NULL;   // Application data
-extern static Logging g_sLog;          // Write Log
-
-class CommunicateControl *m_pComControl;
+extern static SmartBellData*    g_pSmartBellData = NULL;   // Application data
+extern static Logging           g_sLog;          // Write Log
+static bool                     g_bProcessing =  false;    // Cờ báo việc đang xử lý dữ liệu
+static MQTTConnector *          m_pComControl = NULL;
 ///*************** FUCNTION **************///
 
 void InitializeData(); 		// Khởi tạo dữ liệu
-void ListenDataProcess(); 	// Xử lý
+void ProcessDataQueue(); 	// Xử lý
 void ReleaseData();			// Giải phóng bộ nhớ
 void ReceiveHandler(std::string sReceiveData); // Xử lý dữ liệu nhận được
 
+//void * ProcessBellDataCaptureImage( void *args);
+void ProcessBellDataCaptureImage(BellData* pBellDt);
+void ProcessDataQueue();
 #endif  // SMARTBELL_MAIN_H_

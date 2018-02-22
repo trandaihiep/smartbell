@@ -61,11 +61,17 @@ CameraHandler::~CameraHandler(){
 void CameraHandler::SetCamdata(CameraData* pCamData){
     m_pCamData = pCamData;
 }
+
+
+int CameraHandler::SaveImage(){
+    cv::imwrite(m_pCamData->GetPath(),m_pCamData->GetImage());
+}
 // Description: Chụp hình từ camera
 // Parameters: 
 //		
 // Return: None
-int CameraHandler::CaptureImage(){
+
+void *CameraHandler::CaptureImage(){
      
 	if(!m_pCamData->GetMainURL().empty()){
         cv::VideoCapture cap(m_pCamData->GetMainURL(), cv::VideoCaptureAPIs::CAP_GSTREAMER);
@@ -75,7 +81,8 @@ int CameraHandler::CaptureImage(){
             cap >> frame;
             if( !frame.empty() ) {
                 m_pCamData->SetImage(frame);
-                return 0;
+                SaveImage();//Lưu hình
+                return CAM_SUCCESS;
             }
         }
     }
@@ -87,17 +94,26 @@ int CameraHandler::CaptureImage(){
             cap >> frame;
             if( !frame.empty() ) {
                 m_pCamData->SetImage(frame);
-                return 0;
+                SaveImage();//Lưu hình
+                return CAM_SUCCESS;
             }
-            return ERR_EMPTY_FRAME;
+            return CAM_ERROR_EMPTY_FRAME;
         }
-        return ERR_CAP_CLOSE;
+        return CAM_ERROR_CLOSE;
     }
-    return ERR_EMPTY_URL;
-}
-
-int CameraHandler::SaveImage(){
-    cv::imwrite(m_pCamData->GetPath(),m_pCamData->GetImage());
+    return CAM_ERROR_INVALID_URL;
 }
 
 
+// Description: Chụp hình từ camera
+// Parameters: 
+//		
+// Return: None
+int CameraHandler::CaptureImage(CameraData* pCamData){
+    SetCamdata(pCamData);
+    // Chụp hình
+    //pthread_create(m_thrCapture,NULL,&CaptureImage,NULL); // Đa luồng
+    CaptureImage();// Đơn luồng
+    // Lưu hình
+    SaveImage();
+}
