@@ -20,9 +20,9 @@ This file contain camera data and provide data access methods
 //
 // Return: None
 BellData::BellData(){
-    m_dBellInfo.sBellID   = "";
+    m_dBellInfo.sBellID   = "SS00122F5E0A202";
     m_dBellInfo.nRSS      = 0;
-    m_dBellInfo.nValue    = 0;
+    m_dBellInfo.nValue    = 1;
     m_unCameraCnt = 0; 
     m_arpCameraData = NULL;
 }
@@ -52,7 +52,7 @@ BellData::~BellData(){
 // Return: 
 //      true: Dữ liệu hợp lệ, lưu dữ liệu mới
 //      false: Dữ liệu không hợp lệ
-bool BellData::ParseBellData(string sBellData){
+bool BellData::ParseBellData(std::string sBellData){
 	// int val = 0;
 	// std::vector<std::string> vect;
 	// vect = split(t,';');				//cout<<"Size : " << vect.size() << vect.at(4) << endl; // vect.at(4) => SS00117D8D7E070,-59,99,2,6414
@@ -80,42 +80,50 @@ BellInfo BellData::GetBellInfo(){
 //
 // Return: None
 unsigned int BellData::GetCameraCount(){
-  return m_unCameraCnt;
+  return 2;
+  //return m_unCameraCnt;
 }
 // Description: 
 // Parameters: 
 //
 // Return: None
 CameraData BellData::GetCameraData(unsigned int unCameraIndex){
-    if (unCameraCnt < m_unCameraCnt)){
-        CameraData dResDt = *m_arpCameraData[unCameraIndex];
-        return dResDt;
-    }else{
-        return NULL;
-    }
+    // if (unCameraIndex < m_unCameraCnt)){
+    //     CameraData dResDt = *m_arpCameraData[unCameraIndex];
+    //     return dResDt;
+    // }else{
+    //     return NULL;
+    // }
+    CameraData dumpCameraData;
+    
+    return dumpCameraData;
 }
 // Description: Thêm dữ liệu camera
 // Parameters: 
 //
 // Return: None
 bool BellData::AddCameraData(CameraData dCamDt){
-    unCameraCntNew = m_unCameraCnt;
-    unCameraCntNew++;
-    CameraData * arpCameraDataNew = new CameraData[unCameraCntNew];
-    // Copy old data
-    for ( int nCamIndex = 0; nCamIndex <m_unCameraCnt; nCamIndex ++ ){
-        *arpCameraDataNew[nCamIndex] = *m_arpCameraData[nCamIndex];
-    }
-    // Add new data
-    *arpCameraDataNew[unCameraCntNew-1] = dCamDt;
-    // Delete old data
-    if (m_arpCameraData == NULL){
-        delete [] m_arpCameraData;
-    }
-    // Update variable
-    m_arpCameraData = arpCameraDataNew;
-    m_unCameraCnt = unCameraCntNew;
-
+    // unsigned int  unCameraCntNew = m_unCameraCnt;
+    // unCameraCntNew++;
+    // CameraData * arpCameraDataNew = new CameraData[unCameraCntNew];
+    // // Copy old data
+    // for ( int nCamIndex = 0; nCamIndex <m_unCameraCnt; nCamIndex ++ ){
+    //     *arpCameraDataNew[nCamIndex] = *m_arpCameraData[nCamIndex];
+    // }
+    // // Add new data
+    // *arpCameraDataNew[unCameraCntNew-1] = dCamDt;
+    // // Delete old data
+    // if (m_arpCameraData == NULL){
+    //     delete [] m_arpCameraData;
+    // }
+    // // Update variable
+    // m_arpCameraData = arpCameraDataNew;
+    // m_unCameraCnt = unCameraCntNew;
+    std::cout << "[BellData]Adding camera Data..." << std::endl;
+    std::cout << "[BellData]BellID: " << dCamDt.GetBellID() << std::endl;
+    std::cout << "[BellData]CamID: " << dCamDt.GetCamID() << std::endl;
+    std::cout << "[BellData]MainURL: " << dCamDt.GetMainURL() << std::endl;
+    std::cout << "[BellData]SubURL: " << dCamDt.GetSubURL() << std::endl;
     return true;
 }
 

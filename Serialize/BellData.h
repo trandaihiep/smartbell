@@ -14,6 +14,7 @@ Lop chua data cho camera
 ///****************  INCLUDE ***************///
 #include<string>
 #include"CameraData.h"
+#include<iostream>
 
 ///****************  DEFINE ****************///
 
@@ -27,7 +28,7 @@ Lop chua data cho camera
 struct BellInfo {
     std::string sBellID = "";
     unsigned int nRSS = 0;
-    unsigned int nValue = 0;
+    unsigned int nValue = 1;
 };
 /*
  * Class: BellData
@@ -51,7 +52,7 @@ class BellData {
         bool ParseBellData(std::string sBellData); //Phân tích chuối dữ liệu sBellData sau đó lưu dữ liệu nếu hợp lệ.
 
         BellInfo GetBellInfo(); // Lấy thông tin chuông
-        int GetCameraCount();   // Lấy số lượng camera được điều khiển bởi chuông
+        unsigned int GetCameraCount();   // Lấy số lượng camera được điều khiển bởi chuông
         CameraData GetCameraData(unsigned int unCameraIndex);
         bool AddCameraData(CameraData dCamDt);
         // bool RemoveCameraData(unsigned int unCameraIndex);

@@ -43,7 +43,7 @@ class CameraData {
        std::string GetBellID();
        void SetBellID(std::string sBellID);
        std::string GetCamID();
-       void SetCamID(std::string sCameID);
+       void SetCamID(std::string sCamID);
        std::string GetMainURL();
        void SetMainURL(std::string sMainURL);
        std::string GetSubURL();
