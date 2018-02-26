@@ -19,7 +19,7 @@ BellData.o: ../Serialize/BellData.cpp
 	${CXX} -c -std=c++11 $^ -o $@ ${CFLAGS}
 CameraData.o: ../Serialize/CameraData.cpp
 	${CXX} -c -std=c++11 $^ -o $@ ${CFLAGS}
-CameraHandler.o: /Units/CameraHandler.cpp
+CameraHandler.o: ../Units/CameraHandler.cpp
 	${CXX} -c -std=c++11 $^ -I/usr/local/include/opencv -I/usr/local/include -o $@ ${CFLAGS} 
 clean :
 	-rm -f *.o testcurl testcamera
