@@ -23,10 +23,12 @@ Quản lý thao tác của camera
 #include "rapidjson/writer.h"
 #include "rapidjson/stringbuffer.h"
 #include "rapidjson/reader.h"
+#include <ctime>
 ///****************  DEFINE ****************///
 #define NETSOFT_GET_CAMLIST_URL "http://221.132.23.2:8099/GSTB_Services/Service1.svc/getlistcam"
 #define CONTENT_TYPE "content-type: application/json"
 #define NETSOFT_PUSH_IMAGE_URL "http://221.132.23.2:8099/GSTB_Services/Service1.svc/push_imagepath"
+#define IMAGE_PATH "http://idoorbell.hcmtelecom.vn:8080/img/"
 ///**************  NAMESPACE **************///
 
 /*
@@ -41,6 +43,7 @@ class ClientAPI{
         std::string CurlExecute(std::string url, std::string type, std::string data);
         std::vector <std::string> MessageSpliter(std::string message);
         CameraData ParseJSONObject(std::string sJSONObject);
+        std::string whattimeisit();
         ///*************** VARIABLE **************///
 
    public:

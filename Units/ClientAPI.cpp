@@ -58,7 +58,6 @@ int ClientAPI::GetCameraList(BellData* pBellData){
         }
     }
     return 0;
-    
 }
 
 // Description: Gửi thông tin và hình ảnh chụp được lên server
@@ -72,7 +71,7 @@ int ClientAPI::PostImageInfo(BellData* pBellData){
     {
         std::string tempString = "{\"id_Bell\":\"" + pBellData->GetBellInfo().sBellID + "\", "
                               "\"id_Cam\":\"" + pBellData->GetCameraData(i).GetCamID() + "\", "
-                              "\"image_Path\":\"" + pBellData->GetCameraData(i).GetPath() +"\"}";
+                              "\"image_Path\":\"" + IMAGE_PATH + pBellData->GetCameraData(i).GetCamID() + "/" + pBellData->GetCameraData(i).GetPath() +"\"}";
         std::string jsonMessage = CurlExecute(NETSOFT_PUSH_IMAGE_URL,
                                             CONTENT_TYPE,
                                             tempString);
@@ -126,6 +125,7 @@ CameraData ClientAPI::ParseJSONObject(std::string sJSONObject)
     {
         //std::cout << "ID_CAM : " << s.GetString() << std::endl;
         retCamData.SetCamID(s.GetString());
+        retCamData.SetPath(whattimeisit() + ".png");
     }
 	s = d["MAIN_URL"];
     if(!s.IsNull())
@@ -169,4 +169,15 @@ std::string ClientAPI::CurlExecute(std::string url, std::string type, std::strin
   }
   return readBuffer;
 
+}
+
+std::string ClientAPI::whattimeisit(){
+	time_t rawtime;
+	struct tm * timeinfo;
+  	char buffer[80];
+  	time (&rawtime);
+  	timeinfo = localtime(&rawtime);
+  	strftime(buffer,sizeof(buffer),"%y%m%d-%H%M%S",timeinfo);
+  	std::string str(buffer);
+  	return str;
 }
