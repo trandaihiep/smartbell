@@ -25,5 +25,5 @@ endif (UNIX)
 
 target_compile_options( Logging PUBLIC -std=c++11 -fpermissive -w -Wall )
 
-#target_link_libraries( main_test Logging -L/usr/lib64 -ldl )
-target_link_libraries( test_log Logging )
+target_link_libraries( test_log Logging -L/usr/lib64 -ldl )
+# target_link_libraries( test_log Logging )

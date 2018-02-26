@@ -13,7 +13,7 @@ Lớp MQTTConnector là lớp bao của lớp mosquitto nhằm cung cấp các g
 ///****************  INCLUDE ***************///
 #include <stdio>
 #include <cstring>
-#include "Units/MQTTConnector.h"
+#include "MQTTConnector.h"
 #include <mosquittopp.h>
 
 

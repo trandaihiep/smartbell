@@ -11,7 +11,7 @@ Lớp SmartBellData là lớp bao của lớp mosquitto nhằm cung cấp các g
 *****************************************/
 
 ///****************  INCLUDE ***************///
-#include "Units/SmartBellData.h"
+#include "SmartBellData.h"
 
 
 ///************** FUCNTION **************///
@@ -75,7 +75,7 @@ void SmartBellData::PushBellData(string sBellData)
 // Parameters: None
 //		
 // Return: None
-void SmartBellData::PopBellData()
+BellData SmartBellData::PopBellData()
 {
 	if (!m_qBellDataQueue.empty())  {
 		BellData dBellData = m_qBellDataQueue.front();
