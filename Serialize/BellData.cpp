@@ -20,11 +20,11 @@ This file contain camera data and provide data access methods
 //
 // Return: None
 BellData::BellData(){
-    m_dBellInfo.sBellID   = "SS00122F5E0A202";
+    m_dBellInfo.sBellID   = "";
     m_dBellInfo.nRSS      = 0;
-    m_dBellInfo.nValue    = 1;
+    m_dBellInfo.nValue    = 0;
     m_unCameraCnt = 0; 
-    m_arpCameraData = NULL;
+    m_arpCameraData.clear();
 }
 // BellData::BellData(std::string sBellData){
 //     m_dBellInfo.sBellID   = "";
@@ -41,9 +41,7 @@ BellData::BellData(){
 //
 // Return: None
 BellData::~BellData(){
-    if (m_arpCameraData == NULL){
-        delete [] m_arpCameraData;
-    }
+    m_arpCameraData.clear();
 }
 
 // Description: Phân tích chuối dữ liệu sBellData sau đó lưu dữ liệu nếu hợp lệ.
@@ -52,20 +50,20 @@ BellData::~BellData(){
 // Return: 
 //      true: Dữ liệu hợp lệ, lưu dữ liệu mới
 //      false: Dữ liệu không hợp lệ
+// Message Sample:  $SS00122F5E0A200,59,1#
 bool BellData::ParseBellData(std::string sBellData){
 	// int val = 0;
-	// std::vector<std::string> vect;
-	// vect = split(t,';');				//cout<<"Size : " << vect.size() << vect.at(4) << endl; // vect.at(4) => SS00117D8D7E070,-59,99,2,6414
-	// if (vect.size() > 5){																					//	^ this is Sensor ID		  ^ sensor value
-	// 	vect=split(vect.at(4),',');		// split vect.at(4) by "," into 4 elements where .at(0) is sensor ID and .at(4) is value of sensor
-	// 	if ((vect.size() > 4) & (!strcmp(vect.at(0).c_str(), SENSORID)))
-	// 	{
-	// 		val = std::stoi(vect.at(4));	cout<<"Val: " << val << endl;			
-	// 		if(val > THRES){
-	// 			g_pSmartBellData.m_bAlarmFlag = true;
-	// 		}
-	// 	}
-	// }
+    if(sBellData[0] == '$')
+    {
+        std::vector<std::string> vect;
+        std::size_t sz;
+        vect = Split(sBellData,',');
+        if (vect.size() == 3){
+            m_dBellInfo.sBellID = vect[0].substr(1);
+            m_dBellInfo.nRSS = std::stoi(vect[1],&sz);
+            m_dBellInfo.nValue = std::stoi(vect[2],&sz);
+        }
+    }
     return true;
 }
 // Description: Lấy thông tin chuông
@@ -80,50 +78,28 @@ BellInfo BellData::GetBellInfo(){
 //
 // Return: None
 unsigned int BellData::GetCameraCount(){
-  return 2;
-  //return m_unCameraCnt;
+    return m_unCameraCnt;
 }
-// Description: 
+// Description: Return CameraData from array, start from 0
 // Parameters: 
 //
 // Return: None
 CameraData BellData::GetCameraData(unsigned int unCameraIndex){
-    // if (unCameraIndex < m_unCameraCnt)){
-    //     CameraData dResDt = *m_arpCameraData[unCameraIndex];
-    //     return dResDt;
-    // }else{
-    //     return NULL;
-    // }
-    CameraData dumpCameraData;
-    
-    return dumpCameraData;
+    return m_arpCameraData[unCameraIndex];
 }
 // Description: Thêm dữ liệu camera
 // Parameters: 
 //
 // Return: None
 bool BellData::AddCameraData(CameraData dCamDt){
-    // unsigned int  unCameraCntNew = m_unCameraCnt;
-    // unCameraCntNew++;
-    // CameraData * arpCameraDataNew = new CameraData[unCameraCntNew];
-    // // Copy old data
-    // for ( int nCamIndex = 0; nCamIndex <m_unCameraCnt; nCamIndex ++ ){
-    //     *arpCameraDataNew[nCamIndex] = *m_arpCameraData[nCamIndex];
-    // }
-    // // Add new data
-    // *arpCameraDataNew[unCameraCntNew-1] = dCamDt;
-    // // Delete old data
-    // if (m_arpCameraData == NULL){
-    //     delete [] m_arpCameraData;
-    // }
-    // // Update variable
-    // m_arpCameraData = arpCameraDataNew;
-    // m_unCameraCnt = unCameraCntNew;
     std::cout << "[BellData]Adding camera Data..." << std::endl;
     std::cout << "[BellData]BellID: " << dCamDt.GetBellID() << std::endl;
     std::cout << "[BellData]CamID: " << dCamDt.GetCamID() << std::endl;
     std::cout << "[BellData]MainURL: " << dCamDt.GetMainURL() << std::endl;
     std::cout << "[BellData]SubURL: " << dCamDt.GetSubURL() << std::endl;
+    
+    m_unCameraCnt++;
+    m_arpCameraData.push_back(dCamDt);
     return true;
 }
 
@@ -134,3 +110,18 @@ bool BellData::AddCameraData(CameraData dCamDt){
 // bool BellData::RemoveCameraData(unsigned int unCameraIndex){
 //   m_sMainURL = sMainURL;
 // }
+
+// // Description: Split string into parts by a delimiter
+// // Parameters: 
+// //
+// // Return: None
+std::vector<std::string> BellData::Split (const std::string input,char delim)
+{
+	std::vector<std::string> tokens;
+	std::string word;
+    std::stringstream stream(input);
+    while( getline(stream, word, delim) ){
+        tokens.push_back(word);
+	}
+	return tokens;
+}

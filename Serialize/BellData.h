@@ -15,7 +15,7 @@ Lop chua data cho camera
 #include<string>
 #include"CameraData.h"
 #include<iostream>
-
+#include <vector>
 ///****************  DEFINE ****************///
 
 ///**************  NAMESPACE **************///
@@ -28,7 +28,7 @@ Lop chua data cho camera
 struct BellInfo {
     std::string sBellID = "";
     unsigned int nRSS = 0;
-    unsigned int nValue = 1;
+    unsigned int nValue = 0;
 };
 /*
  * Class: BellData
@@ -39,11 +39,12 @@ class BellData {
 
    private: //// PRIVATE
         ///*************** FUCNTION **************///
+std::vector<std::string> Split (const std::string input,char delim);
 
         ///*************** VARIABLE **************///
         BellInfo m_dBellInfo;
         unsigned int m_unCameraCnt = 0; // Số lượng camera
-        CameraData * m_arpCameraData = NULL;
+        std::vector <CameraData> m_arpCameraData;
    public: //// PUBLIC
         ///*************** FUCNTION **************///
         BellData();
