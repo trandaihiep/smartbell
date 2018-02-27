@@ -71,11 +71,18 @@ void CameraHandler::SaveImage(){
     if(!fs::exists(img_directory)) fs::create_directory(img_directory);
     cv::imwrite(img_directory + "/" + m_pCamData->GetPath(),m_pCamData->GetImage());
 }
+
 // Description: Chụp hình từ camera
 // Parameters: 
 //		
 // Return: None
-
+void *CameraHandler::CaptureThread (void *args){
+    CaptureResult returncode = CaptureImage();
+}
+// Description: Chụp hình từ camera
+// Parameters: 
+//		
+// Return: None
 CaptureResult CameraHandler::CaptureImage(){
      
 	if(!m_pCamData->GetMainURL().empty()){
@@ -117,7 +124,7 @@ CaptureResult CameraHandler::CaptureImage(){
 int CameraHandler::CaptureImage(CameraData* pCamData){
     SetCamdata(pCamData);
     // Chụp hình
-    //pthread_create(m_thrCapture,NULL,&CaptureImage,NULL); // Đa luồng
+    //thread_create(&m_thrCapture,NULL,&CameraHandler::CaptureThread,NULL); // Đa luồng
     CaptureResult returncode = CaptureImage();
     if(returncode)
     {       

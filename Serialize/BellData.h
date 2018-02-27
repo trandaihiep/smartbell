@@ -13,9 +13,11 @@ Lop chua data cho camera
 #define BELLDATA_H_
 ///****************  INCLUDE ***************///
 #include<string>
-#include"CameraData.h"
 #include<iostream>
 #include <vector>
+
+#include"CameraData.h"
+#include"Logging.h"
 ///****************  DEFINE ****************///
 
 ///**************  NAMESPACE **************///

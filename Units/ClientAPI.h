@@ -24,6 +24,8 @@ Quản lý thao tác của camera
 #include "rapidjson/stringbuffer.h"
 #include "rapidjson/reader.h"
 #include <ctime>
+
+#include "Logging.h"
 ///****************  DEFINE ****************///
 #define NETSOFT_GET_CAMLIST_URL "http://221.132.23.2:8099/GSTB_Services/Service1.svc/getlistcam"
 #define CONTENT_TYPE "content-type: application/json"

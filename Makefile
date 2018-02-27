@@ -3,7 +3,8 @@ LDFLAGS=-Llib lib/mosq/cpp/libmosquittopp.so.1 lib/mosq/libmosquitto.so.1 -lpthr
 
 DIRS=Logging Serialize Units
 
-LOGGING_OBJS=LogHandler.o
+LOGGING_OBJS=LogHandler.o\
+				Logging.o
 
 SERIALIZE_OBJS=BellData.o\
 				CameraData.o\

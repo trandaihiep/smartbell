@@ -41,7 +41,9 @@ MQTTConnector::~MQTTConnector(){
 // Return: None
 void MQTTConnector::on_connect(int rc)
 {
-	printf("MQTT Connected with code %d.\n", rc);
+	std::string sLogContent = "MQTT Connected with code  " + std::to_string(rc);
+	Log(LOG_INFO, sLogContent);
+
 	if(rc == 0)
 	{
 		/* Only attempt to subscribe on a successful connect. */

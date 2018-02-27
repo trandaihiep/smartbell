@@ -67,6 +67,7 @@ int ClientAPI::GetCameraList(BellData* pBellData){
 int ClientAPI::PostImageInfo(BellData* pBellData){
     if (pBellData == NULL)
         return 1;
+    Log(LOG_INFO, "PostImageInfo");
     for(unsigned int i=0; i < pBellData->GetCameraCount(); i++)
     {
         std::string tempString = "{\"id_Bell\":\"" + pBellData->GetBellInfo().sBellID + "\", "
@@ -75,7 +76,6 @@ int ClientAPI::PostImageInfo(BellData* pBellData){
         std::string jsonMessage = CurlExecute(NETSOFT_PUSH_IMAGE_URL,
                                             CONTENT_TYPE,
                                             tempString);
-        std::cout << "[ClientAPI]Push status: " << jsonMessage << std::endl;
     }
   return 0;
 }
@@ -144,6 +144,10 @@ CameraData ClientAPI::ParseJSONObject(std::string sJSONObject)
 
 std::string ClientAPI::CurlExecute(std::string url, std::string type, std::string data)
 {
+    std::string sLogContent = "[ClientAPI]URL: " + url;
+    Log(LOG_INFO, sLogContent);
+    sLogContent = "[ClientAPI]Data: " + data;
+    Log(LOG_INFO, sLogContent);
   CURL *curl;
   CURLcode res;
   std::string readBuffer = "";
@@ -155,10 +159,13 @@ std::string ClientAPI::CurlExecute(std::string url, std::string type, std::strin
     struct curl_slist *chunk = NULL;
     /* Remove a header curl would otherwise add by itself */ 
     chunk = curl_slist_append(chunk, type.c_str());
-    curl_easy_setopt(curl, CURLOPT_URL, url.c_str()); std::cout << "[ClientAPI]URL: " << url << std::endl;
+    curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
+
+
     //curl_easy_setopt(curl, CURLOPT_POST, 1L);
     curl_easy_setopt(curl, CURLOPT_HTTPHEADER, chunk);
-    curl_easy_setopt(curl, CURLOPT_POSTFIELDS, data.c_str()); std::cout << "[ClientAPI]Data: " << data << std::endl;
+    curl_easy_setopt(curl, CURLOPT_POSTFIELDS, data.c_str());
+
     curl_easy_setopt(curl, CURLOPT_POSTFIELDSIZE, (long)std::strlen(data.c_str()));
     curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, WriteCallback);
     curl_easy_setopt(curl, CURLOPT_WRITEDATA, &readBuffer);
@@ -167,6 +174,9 @@ std::string ClientAPI::CurlExecute(std::string url, std::string type, std::strin
     readBuffer.erase(std::remove(readBuffer.begin(), readBuffer.end(), '\\'), readBuffer.end());
     //std::cout << readBuffer << std::endl;
   }
+
+    Log(LOG_INFO, readBuffer);
+
   return readBuffer;
 
 }

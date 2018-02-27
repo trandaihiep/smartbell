@@ -93,17 +93,18 @@ void ReceiveHandler(std::string sReceiveData){
 void ProcessDataQueue(){	
 
 	Log(LOG_INFO, "ProcessDataQueue");
-	if (g_bProcessing) return; // Chỉ cho phép 1 luồng xử lý
-	g_bProcessing = true; 
+	// if (g_bProcessing) return; // Chỉ cho phép 1 luồng xử lý
+	// g_bProcessing = true; 
+	bool bHasBellData = true;
 
-	while(g_pSmartBellData->BellDataSize() != 0){
+	while(bHasBellData){
 		// Lấy dữ liệu chuông
-		BellData dBellDt = g_pSmartBellData->PopBellData();
-		BellData * pBellData = new BellData();
-		*pBellData = dBellDt;
+		BellData * pBellData = g_pSmartBellData->PopBellData();
 		if(pBellData != NULL){
 			// Xử lý dữ liệu, chụp hình và gửi ảnh
 			ProcessBellDataCaptureImage(pBellData);
+		}else{
+			bHasBellData = false;
 		}
 		//std::this_thread::sleep_for(std::chrono::milliseconds(50));
 
@@ -119,6 +120,8 @@ void ProcessDataQueue(){
 //void * ProcessBellDataCaptureImage( void *args){	
 void  ProcessBellDataCaptureImage(BellData* pBellDt){
 	if(pBellDt != NULL){
+
+		Log(LOG_INFO, "ProcessBellDataCaptureImage");
 		// Lấy danh sách camera và thêm vào dữ liệu chuông
 		ClientAPI dClientApi;
 		dClientApi.GetCameraList(pBellDt);
@@ -159,25 +162,4 @@ void ReleaseData(){
 		delete m_pComControl;
 	}
 	mosqpp::lib_cleanup();
-}
-
-// Description: Hiển thị và lưu lại thông tin
-// Parameters: 
-//		int nLogLevel: Cấp độ ghi thông tin 
-//      const char *pztcContent : Nội dung
-//      string      sContent    : Nội dung
-// Return: None
-void Log(int nLogLevel, const char *pztcContent){
-    g_sLog.Log(nLogLevel, pztcContent);
-
-}
-void Log(int nLogLevel, std::string sContent){
-    g_sLog.Log(nLogLevel, sContent);
-}
-// Description: Thiết lấp mức độ hiển thị thông tin
-// Parameters: 
-//		int nLogLevel: Cấp độ ghi thông tin 
-// Return: None
-void SetLogLevel(int nLogLevel){
-    g_sLog.SetDispMode(nLogLevel);
 }

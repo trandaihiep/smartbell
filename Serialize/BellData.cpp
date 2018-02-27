@@ -92,11 +92,12 @@ CameraData BellData::GetCameraData(unsigned int unCameraIndex){
 //
 // Return: None
 bool BellData::AddCameraData(CameraData dCamDt){
-    std::cout << "[BellData]Adding camera Data..." << std::endl;
-    std::cout << "[BellData]BellID: " << dCamDt.GetBellID() << std::endl;
-    std::cout << "[BellData]CamID: " << dCamDt.GetCamID() << std::endl;
-    std::cout << "[BellData]MainURL: " << dCamDt.GetMainURL() << std::endl;
-    std::cout << "[BellData]SubURL: " << dCamDt.GetSubURL() << std::endl;
+
+	Log(LOG_INFO, "BellData::AddCameraData");
+	Log(LOG_INFO, dCamDt.GetBellID() );
+	Log(LOG_INFO, dCamDt.GetCamID());
+	Log(LOG_INFO, dCamDt.GetMainURL());
+	Log(LOG_INFO, dCamDt.GetSubURL());
     
     m_unCameraCnt++;
     m_arpCameraData.push_back(dCamDt);

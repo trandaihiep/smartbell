@@ -14,6 +14,7 @@ Lớp SmartBellData là lớp chứa dữ liệu của chương trình
 #include<string>
 #include<queue>
 #include <BellData.h>
+#include <pthread.h>
 ///****************  DEFINE ****************///
 #define APP_SERVER "10.4.1.210"
 #define APP_PORT 1883
@@ -56,15 +57,16 @@ class SmartBellData{
 		///*************** FUCNTION **************///
 
 		///*************** VARIABLE **************///
+		pthread_mutex_t m_mutexBellDataQueue = PTHREAD_MUTEX_INITIALIZER;
+
 		std::queue<BellData> m_qBellDataQueue;	// Queue store receiving bell data
    public: //// PUBLIC
 		///*************** FUCNTION **************///
 		SmartBellData();
 		~SmartBellData();
 		bool Initialize();
-		int BellDataSize(); // Get number of Bell Data queue
 		void PushBellData(string sBellData);
-		BellData PopBellData();
+		BellData* PopBellData();
 
 		///*************** VARIABLE **************///
 		SmartBellConfig m_dConfig;

@@ -15,6 +15,8 @@ Lớp MQTTConnector là lớp bao của lớp mosquitto nhằm cung cấp các g
 #include <mosquittopp.h>
 #include <functional>
 #include <string>
+
+#include "Logging.h"
 ///****************  DEFINE ****************///
 #define BUFSIZE 201
 

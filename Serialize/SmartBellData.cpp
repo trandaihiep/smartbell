@@ -35,29 +35,14 @@ SmartBellData::~SmartBellData(){
 // Parameters: None
 //		
 // Return: true/false - Success/Failure
-bool SmartBellData::Initialize()
-{	bool bRes = true;
+bool SmartBellData::Initialize(){	
+	// Initialize mutex
+	pthread_mutex_init(&m_mutexBellDataQueue, NULL);
+	bool bRes = true;
 	bRes &= m_dConfig.ReadConfigParam();
 	bRes &= m_dConfig.WriteConfigParam();
 	return bRes;
 }
-// // Description: Kiểm tra tính hợp lệ của dữ liệu nhận từ chuông
-// // Parameters: 
-// //		string sBellData: Dữ liệu nhận từ chuông
-// // Return: None
-// bool SmartBellData::IsInvalidBellData(string sBellData)
-// {
-// 	return true;
-// }
-
-// Description: Nhận số lượng dữ liệu chuông cửa
-// Parameters: None
-//		
-// Return: int Số lượng
-int SmartBellData::BellDataSize(){ // Get number of Bell Data queue
-	return m_qBellDataQueue.size();
-}
-
 // Description: Thêm dữ liệu chuông cửa vào
 // Parameters: 
 //		string sBellData: Dữ liệu nhận từ chuông
@@ -67,7 +52,9 @@ void SmartBellData::PushBellData(string sBellData)
 	BellData dBellData;
 	dBellData.ParseBellData(sBellData);
 	if (dBellData.ParseBellData(sBellData)){// Kiểm tra tính hợp lệ
+		pthread_mutex_lock(&m_mutexBellDataQueue); //Lock m_qBellDataQueue
 		m_qBellDataQueue.push(dBellData);
+  		pthread_mutex_unlock(&m_mutexBellDataQueue); // Unlock m_qBellDataQueue
 	}
 }
 
@@ -75,13 +62,17 @@ void SmartBellData::PushBellData(string sBellData)
 // Parameters: None
 //		
 // Return: None
-BellData SmartBellData::PopBellData()
+BellData* SmartBellData::PopBellData()
 {
-	BellData dBellData;
+	BellData * pBellData = NULL;
+	pthread_mutex_lock(&m_mutexBellDataQueue); //Lock m_qBellDataQueue
+
 	if (!m_qBellDataQueue.empty())  {
-		dBellData = m_qBellDataQueue.front();
+		pBellData = new BellData();
+		*pBellData = m_qBellDataQueue.front();
 		m_qBellDataQueue.pop();
-		return dBellData;
 	}
-	return dBellData;
+	pthread_mutex_unlock(&m_mutexBellDataQueue); // Unlock m_qBellDataQueue
+
+	return pBellData;
 }

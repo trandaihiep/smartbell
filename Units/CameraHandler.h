@@ -38,6 +38,7 @@ class CameraHandler{
         ///*************** FUCNTION **************///
         void SetCamdata(CameraData* pCamData);
         CaptureResult CaptureImage();
+        void *CaptureThread (void *args);
         void SaveImage();
         ///*************** VARIABLE **************///
         CameraData* m_pCamData;
