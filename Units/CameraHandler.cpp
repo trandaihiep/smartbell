@@ -12,7 +12,9 @@ Xử lý tác vụ của camera
 
 ///****************  INCLUDE ***************///
 #include "CameraHandler.h"
-
+#include <iostream>
+#include <experimental/filesystem>
+namespace fs = std::experimental::filesystem;
 ///************** FUCNTION **************///
 // Description: Contructor
 // Parameters: 
@@ -64,7 +66,10 @@ void CameraHandler::SetCamdata(CameraData* pCamData){
 
 
 void CameraHandler::SaveImage(){
-    cv::imwrite(IMAGE_DIR + m_pCamData->GetCamID() + "/" + m_pCamData->GetPath(),m_pCamData->GetImage());
+    std::string img_directory = IMAGE_DIR + m_pCamData->GetCamID();// + "/";
+    //std::cout << "Write Image to: " << test << std::endl;
+    if(!fs::exists(img_directory)) fs::create_directory(img_directory);
+    cv::imwrite(img_directory + "/" + m_pCamData->GetPath(),m_pCamData->GetImage());
 }
 // Description: Chụp hình từ camera
 // Parameters: 
@@ -119,5 +124,6 @@ int CameraHandler::CaptureImage(CameraData* pCamData){
         return returncode;
     };// Đơn luồng
     // Lưu hình
-    SaveImage();
+    //SaveImage();
+    return 0;
 }

@@ -21,7 +21,7 @@ all: smartbell
 
 # smartbell: main.o Logging Serialize Units
 smartbell: main.o ${LOGGING_OBJS} ${SERIALIZE_OBJS} ${UNIT_OBJS}
-	${CXX} $^ -o $@ ${LDFLAGS} ${CFLAGS} `pkg-config --libs opencv` -lcurl
+	${CXX} $^ -o $@ ${LDFLAGS} ${CFLAGS} `pkg-config --libs opencv` -lcurl -lstdc++fs
 
 # Logging
 Logging: ${LOGGING_OBJS}

@@ -1,12 +1,12 @@
 CFLAGS=-Wall -ggdb -I../Serialize -I../Units
-LDFLAGS= -L.
+LDFLAGS= -L. 
 
 .PHONY: all clean
 
-all: testcurl
+all: testcamera
 
 testcamera: testcamera.o CameraData.o CameraHandler.o 
-	${CXX} $^ -o $@ ${LDFLAGS} `pkg-config --libs opencv`
+	${CXX} $^ -o $@ ${LDFLAGS} `pkg-config --libs opencv` -lstdc++fs
 testcurl: testcurl.o ClientAPI.o CameraData.o BellData.o
 	${CXX} $^ -o $@ ${LDFLAGS} -lcurl `pkg-config --libs opencv` `pkg-config --libs RapidJSON`
 testcurl.o: test_curl.cpp
