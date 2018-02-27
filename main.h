@@ -26,7 +26,7 @@ Contributors:
 #include "MQTTConnector.h"
 #include "SmartBellData.h"
 #include "CameraHandler.h"
-#include "Logging.h"
+#include "LogHandler.h"
 
 ///****************  DEFINE ****************///
 #define THRES 0
@@ -36,7 +36,6 @@ using namespace std;
 using namespace std::chrono;
 ///***************  VARIABLE **************///
 extern SmartBellData*    g_pSmartBellData = NULL;   // Application data
-extern LogHandler        g_sLog;          // Write Log
 extern bool                     g_bProcessing =  false;    // Cờ báo việc đang xử lý dữ liệu
 extern MQTTConnector *          m_pComControl = NULL;
 ///*************** FUCNTION **************///
@@ -49,4 +48,9 @@ void ReceiveHandler(std::string sReceiveData); // Xử lý dữ liệu nhận đ
 //void * ProcessBellDataCaptureImage( void *args);
 void ProcessBellDataCaptureImage(BellData* pBellDt);
 void ProcessDataQueue();
+// LOG
+void Log(int nLogLevel, const char *pztcContent); // Ghi log
+void Log(int nLogLevel, std::string sContent); // Ghi log
+void SetLogLevel(int nLogLevel);
+
 #endif  // SMARTBELL_MAIN_H_

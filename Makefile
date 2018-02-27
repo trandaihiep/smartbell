@@ -1,7 +1,7 @@
 CFLAGS=-Wall -ggdb -ILogging -ISerialize -IUnits -IUtilities -Ilib/mosq/cpp  -Ilib/mosq
 LDFLAGS=-Llib lib/mosq/cpp/libmosquittopp.so.1 lib/mosq/libmosquitto.so.1 -lpthread
 
-DIRS=Logging Serialize Units Utilities
+DIRS=Logging Serialize Units
 
 LOGGING_OBJS=LogHandler.o
 
@@ -21,7 +21,7 @@ all: smartbell
 
 # smartbell: main.o Logging Serialize Units
 smartbell: main.o ${LOGGING_OBJS} ${SERIALIZE_OBJS} ${UNIT_OBJS}
-	${CXX} $^ -o $@ ${LDFLAGS} `pkg-config --libs opencv`
+	${CXX} $^ -o $@ ${LDFLAGS} ${CFLAGS} `pkg-config --libs opencv` -lcurl
 
 # Logging
 Logging: ${LOGGING_OBJS}
@@ -56,4 +56,4 @@ MQTTConnector.o : Units/MQTTConnector.cpp  #Units/MQTTConnector.h
 main.o: main.cpp
 	${CXX} -c -std=c++11 `pkg-config --cflags opencv` $^ -o $@ ${CFLAGS}
 clean : 
-	-rm -f *.o fds
+	-rm -f *.o smartbell

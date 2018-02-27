@@ -41,6 +41,9 @@ void LogHandler::Log(unsigned int nLogLevel, const char *pztcContent){
     if ((nLogLevel & m_byDisplayMode ) != 0){
         const char *pztcLogLevel = GetLogLevelName(nLogLevel);
         printf("%s [%s]: %s",sDatetime.c_str(), pztcLogLevel, pztcContent);
+        std::cout <<std::endl;
+        // std::cout <<sDatetime.c_str()<< pztcLogLevel<< pztcContent<< std::endl;
+
     }
     // Ghi log ra file: Chưa code!!!
 }
