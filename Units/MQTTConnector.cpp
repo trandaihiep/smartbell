@@ -11,9 +11,9 @@ Lớp MQTTConnector là lớp bao của lớp mosquitto nhằm cung cấp các g
 *****************************************/
 
 ///****************  INCLUDE ***************///
-#include <stdio>
+#include <cstdio>
 #include <cstring>
-#include "Units/MQTTConnector.h"
+#include "MQTTConnector.h"
 #include <mosquittopp.h>
 
 
@@ -45,7 +45,7 @@ void MQTTConnector::on_connect(int rc)
 	if(rc == 0)
 	{
 		/* Only attempt to subscribe on a successful connect. */
-		subscribe(NULL, m_sGateWayListenAdr);
+		subscribe(NULL, m_sGateWayListenAdr.c_str());
 	}
 }
 
@@ -56,7 +56,7 @@ void MQTTConnector::on_connect(int rc)
 void MQTTConnector::on_message(const struct mosquitto_message *message)
 {
 	char buf[BUFSIZE];
-	if(!strcmp(message->topic, m_sGateWayListenAdr)){
+	if(!strcmp(message->topic, m_sGateWayListenAdr.c_str())){
 		memset(buf, 0, BUFSIZE*sizeof(char));
 		/* Copy N-1 bytes to ensure always 0 terminated. */
 		memcpy(buf, message->payload, 200*sizeof(char));
@@ -92,5 +92,5 @@ void MQTTConnector::publish(std::string message){
 	char buf[BUFSIZE];
 	char *cstr = new char[message.length() + 1];
 	strcpy(cstr, message.c_str());
-	mosquittopp::publish(NULL, m_sGateWayAlarmAdr, strlen(cstr), cstr);
+	mosquittopp::publish(NULL, m_sGateWayAlarmAdr.c_str(), strlen(cstr), cstr);
 }

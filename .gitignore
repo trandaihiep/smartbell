@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 *.o
 *.cmake
 *.make
@@ -7,3 +8,6 @@
 *.check_cache
 *.marks
 *.internal
+=======
+build
+>>>>>>> 4d217749184cece21f6b41846627708aa19f3f1e

@@ -14,6 +14,7 @@ Lớp MQTTConnector là lớp bao của lớp mosquitto nhằm cung cấp các g
 ///****************  INCLUDE ***************///
 #include <mosquittopp.h>
 #include <functional>
+#include <string>
 ///****************  DEFINE ****************///
 #define BUFSIZE 201
 
@@ -39,7 +40,7 @@ class MQTTConnector: public mosqpp::mosquittopp {
 		std::string m_sGateWayAlarmAdr 	= ""; 	//GateWay publish address
    public: //// PUBLIC
 		///*************** FUCNTION **************///
-		MQTTConnector(const char *id=NULL, bool clean_session=true);
+		MQTTConnector(const char *id, const char *host, int port);
 		~MQTTConnector();
 		std::function<void(std::string)> m_strHandlerFunction;
 		void on_connect(int rc);

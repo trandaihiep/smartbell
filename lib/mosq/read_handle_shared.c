@@ -71,12 +71,7 @@ int _mosquitto_handle_pubackcomp(struct mosquitto *mosq, const char *type)
 
 	if(mid){
 		rc = mqtt3_db_message_delete(db, mosq, mid, mosq_md_out);
-		if(rc == MOSQ_ERR_NOT_FOUND){
-			_mosquitto_log_printf(mosq, MOSQ_LOG_WARNING, "Warning: Received %s from %s for an unknown packet identifier %d.", type, mosq->id, mid);
-			return MOSQ_ERR_SUCCESS;
-		}else{
-			return rc;
-		}
+		if(rc) return rc;
 	}
 #else
 	_mosquitto_log_printf(mosq, MOSQ_LOG_DEBUG, "Client %s received %s (Mid: %d)", mosq->id, type, mid);
@@ -113,11 +108,7 @@ int _mosquitto_handle_pubrec(struct mosquitto *mosq)
 
 	rc = _mosquitto_message_out_update(mosq, mid, mosq_ms_wait_for_pubcomp);
 #endif
-	if(rc == MOSQ_ERR_NOT_FOUND){
-		_mosquitto_log_printf(mosq, MOSQ_LOG_WARNING, "Warning: Received PUBREC from %s for an unknown packet identifier %d.", mosq->id, mid);
-	}else if(rc != MOSQ_ERR_SUCCESS){
-		return rc;
-	}
+	if(rc) return rc;
 	rc = _mosquitto_send_pubrel(mosq, mid);
 	if(rc) return rc;
 
@@ -146,7 +137,6 @@ int _mosquitto_handle_pubrel(struct mosquitto_db *db, struct mosquitto *mosq)
 	if(mqtt3_db_message_release(db, mosq, mid, mosq_md_in)){
 		/* Message not found. Still send a PUBCOMP anyway because this could be
 		 * due to a repeated PUBREL after a client has reconnected. */
-		_mosquitto_log_printf(mosq, MOSQ_LOG_WARNING, "Warning: Received PUBREL from %s for an unknown packet identifier %d.", mosq->id, mid);
 	}
 #else
 	_mosquitto_log_printf(mosq, MOSQ_LOG_DEBUG, "Client %s received PUBREL (Mid: %d)", mosq->id, mid);

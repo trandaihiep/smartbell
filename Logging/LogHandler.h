@@ -13,7 +13,7 @@ LogHandler xuất bản ghi thông tin (log)
 ///****************  INCLUDE ***************///
 #include <stdio.h>
 #include <cstdio>
-
+#include <string>
 ///****************  DEFINE ****************///
 #define LOG_ERROR 	0x01 //0b0000001
 #define LOG_WARNING 0x02 //0b0000010
@@ -48,7 +48,7 @@ class LogHandler{
 			}
 		};
 		///*************** VARIABLE **************///
-		unsigned int m_byDisplayMode = LOG_DISP_INFO; // Mode hiển thị log
+		unsigned int m_byDisplayMode; // Mode hiển thị log
    public: //// PUBLIC
 		///*************** FUCNTION **************///
 		LogHandler();
@@ -60,7 +60,7 @@ class LogHandler{
 
 		// Process
 		void Log(unsigned int nLogLevel, const char *pztcContent);
-		void Log(unsigned int nLogLevel, std:string sContent);
+		void Log(unsigned int nLogLevel, std::string sContent);
 		///*************** VARIABLE **************///
 
 

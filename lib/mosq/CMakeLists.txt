@@ -7,12 +7,7 @@ if (${WITH_THREADING} STREQUAL ON)
 		set (PTHREAD_LIBRARIES C:\\pthreads\\Pre-built.2\\lib\\x86\\pthreadVC2.lib)
 		set (PTHREAD_INCLUDE_DIR C:\\pthreads\\Pre-built.2\\include)
 	else (WIN32)
-		find_library(LIBPTHREAD pthread)
-		if (LIBPTHREAD)
-			set (PTHREAD_LIBRARIES pthread)
-		else (LIBPTHREAD)
-			set (PTHREAD_LIBRARIES "")
-		endif()
+		set (PTHREAD_LIBRARIES pthread)
 		set (PTHREAD_INCLUDE_DIR "")
 	endif (WIN32)
 else (${WITH_THREADING} STREQUAL ON)
@@ -49,10 +44,7 @@ add_library(libmosquitto SHARED
 set (LIBRARIES ${OPENSSL_LIBRARIES} ${PTHREAD_LIBRARIES})
 
 if (UNIX AND NOT APPLE)
-	find_library(LIBRT rt)
-	if (LIBRT)
-		set (LIBRARIES ${LIBRARIES} rt)
-	endif (LIBRT)
+	set (LIBRARIES ${LIBRARIES} rt)
 endif (UNIX AND NOT APPLE)
 
 if (WIN32)
@@ -78,8 +70,8 @@ set_target_properties(libmosquitto PROPERTIES
 	SOVERSION 1
 )
 
-install(TARGETS libmosquitto RUNTIME DESTINATION "${BINDIR}" LIBRARY DESTINATION "${LIBDIR}")
-install(FILES mosquitto.h DESTINATION "${INCLUDEDIR}")
+install(TARGETS libmosquitto RUNTIME DESTINATION ${BINDIR} LIBRARY DESTINATION ${LIBDIR})
+install(FILES mosquitto.h DESTINATION ${INCLUDEDIR})
 
 if (UNIX)
 	install(CODE "EXEC_PROGRAM(/sbin/ldconfig)")

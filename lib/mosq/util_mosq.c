@@ -18,12 +18,7 @@ Contributors:
 #include <string.h>
 
 #ifdef WIN32
-#  include <winsock2.h>
-#  include <aclapi.h>
-#  include <io.h>
-#  include <lmcons.h>
-#else
-#  include <sys/stat.h>
+#include <winsock2.h>
 #endif
 
 
@@ -88,7 +83,7 @@ void _mosquitto_check_keepalive(struct mosquitto_db *db, struct mosquitto *mosq)
 void _mosquitto_check_keepalive(struct mosquitto *mosq)
 #endif
 {
-	time_t next_msg_out;
+	time_t last_msg_out;
 	time_t last_msg_in;
 	time_t now = mosquitto_time();
 #ifndef WITH_BROKER
@@ -100,7 +95,7 @@ void _mosquitto_check_keepalive(struct mosquitto *mosq)
 	/* Check if a lazy bridge should be timed out due to idle. */
 	if(mosq->bridge && mosq->bridge->start_type == bst_lazy
 				&& mosq->sock != INVALID_SOCKET
-				&& now - mosq->next_msg_out - mosq->keepalive >= mosq->bridge->idle_timeout){
+				&& now - mosq->last_msg_out >= mosq->bridge->idle_timeout){
 
 		_mosquitto_log_printf(NULL, MOSQ_LOG_NOTICE, "Bridge connection %s has exceeded idle timeout, disconnecting.", mosq->id);
 		_mosquitto_socket_close(db, mosq);
@@ -108,18 +103,18 @@ void _mosquitto_check_keepalive(struct mosquitto *mosq)
 	}
 #endif
 	pthread_mutex_lock(&mosq->msgtime_mutex);
-	next_msg_out = mosq->next_msg_out;
+	last_msg_out = mosq->last_msg_out;
 	last_msg_in = mosq->last_msg_in;
 	pthread_mutex_unlock(&mosq->msgtime_mutex);
 	if(mosq->keepalive && mosq->sock != INVALID_SOCKET &&
-			(now >= next_msg_out || now - last_msg_in >= mosq->keepalive)){
+			(now - last_msg_out >= mosq->keepalive || now - last_msg_in >= mosq->keepalive)){
 
 		if(mosq->state == mosq_cs_connected && mosq->ping_t == 0){
 			_mosquitto_send_pingreq(mosq);
 			/* Reset last msg times to give the server time to send a pingresp */
 			pthread_mutex_lock(&mosq->msgtime_mutex);
 			mosq->last_msg_in = now;
-			mosq->next_msg_out = now + mosq->keepalive;
+			mosq->last_msg_out = now;
 			pthread_mutex_unlock(&mosq->msgtime_mutex);
 		}else{
 #ifdef WITH_BROKER
@@ -233,11 +228,6 @@ int mosquitto_topic_matches_sub(const char *sub, const char *topic, bool *result
 	slen = strlen(sub);
 	tlen = strlen(topic);
 
-	if(!slen || !tlen){
-		*result = false;
-		return MOSQ_ERR_INVAL;
-	}
-
 	if(slen && tlen){
 		if((sub[0] == '$' && topic[0] != '$')
 				|| (topic[0] == '$' && sub[0] != '$')){
@@ -250,7 +240,7 @@ int mosquitto_topic_matches_sub(const char *sub, const char *topic, bool *result
 	spos = 0;
 	tpos = 0;
 
-	while(spos < slen && tpos <= tlen){
+	while(spos < slen && tpos < tlen){
 		if(sub[spos] == topic[tpos]){
 			if(tpos == tlen-1){
 				/* Check for e.g. foo matching foo/# */
@@ -268,26 +258,12 @@ int mosquitto_topic_matches_sub(const char *sub, const char *topic, bool *result
 				*result = true;
 				return MOSQ_ERR_SUCCESS;
 			}else if(tpos == tlen && spos == slen-1 && sub[spos] == '+'){
-				if(spos > 0 && sub[spos-1] != '/'){
-					*result = false;
-					return MOSQ_ERR_INVAL;
-				}
 				spos++;
 				*result = true;
 				return MOSQ_ERR_SUCCESS;
 			}
 		}else{
 			if(sub[spos] == '+'){
-				/* Check for bad "+foo" or "a/+foo" subscription */
-				if(spos > 0 && sub[spos-1] != '/'){
-					*result = false;
-					return MOSQ_ERR_INVAL;
-				}
-				/* Check for bad "foo+" or "foo+/a" subscription */
-				if(spos < slen-1 && sub[spos+1] != '/'){
-					*result = false;
-					return MOSQ_ERR_INVAL;
-				}
 				spos++;
 				while(tpos < tlen && topic[tpos] != '/'){
 					tpos++;
@@ -297,14 +273,10 @@ int mosquitto_topic_matches_sub(const char *sub, const char *topic, bool *result
 					return MOSQ_ERR_SUCCESS;
 				}
 			}else if(sub[spos] == '#'){
-				if(spos > 0 && sub[spos-1] != '/'){
-					*result = false;
-					return MOSQ_ERR_INVAL;
-				}
 				multilevel_wildcard = true;
 				if(spos+1 != slen){
 					*result = false;
-					return MOSQ_ERR_INVAL;
+					return MOSQ_ERR_SUCCESS;
 				}else{
 					*result = true;
 					return MOSQ_ERR_SUCCESS;
@@ -343,7 +315,7 @@ int _mosquitto_hex2bin(const char *hex, unsigned char *bin, int bin_max_len)
 }
 #endif
 
-FILE *_mosquitto_fopen(const char *path, const char *mode, bool restrict_read)
+FILE *_mosquitto_fopen(const char *path, const char *mode)
 {
 #ifdef WIN32
 	char buf[4096];
@@ -352,69 +324,10 @@ FILE *_mosquitto_fopen(const char *path, const char *mode, bool restrict_read)
 	if(rc == 0 || rc > 4096){
 		return NULL;
 	}else{
-		if (restrict_read) {
-			HANDLE hfile;
-			SECURITY_ATTRIBUTES sec;
-			EXPLICIT_ACCESS ea;
-			PACL pacl = NULL;
-			char username[UNLEN + 1];
-			int ulen = UNLEN;
-			SECURITY_DESCRIPTOR sd;
-
-			GetUserName(username, &ulen);
-			if (!InitializeSecurityDescriptor(&sd, SECURITY_DESCRIPTOR_REVISION)) {
-				return NULL;
-			}
-			BuildExplicitAccessWithName(&ea, username, GENERIC_ALL, SET_ACCESS, NO_INHERITANCE);
-			if (SetEntriesInAcl(1, &ea, NULL, &pacl) != ERROR_SUCCESS) {
-				return NULL;
-			}
-			if (!SetSecurityDescriptorDacl(&sd, TRUE, pacl, FALSE)) {
-				LocalFree(pacl);
-				return NULL;
-			}
-
-			sec.nLength = sizeof(SECURITY_ATTRIBUTES);
-			sec.bInheritHandle = FALSE;
-			sec.lpSecurityDescriptor = &sd;
-
-			hfile = CreateFile(buf, GENERIC_READ | GENERIC_WRITE, 0,
-				&sec,
-				CREATE_NEW,
-				FILE_ATTRIBUTE_NORMAL,
-				NULL);
-
-			LocalFree(pacl);
-
-			int fd = _open_osfhandle((intptr_t)hfile, 0);
-			if (fd < 0) {
-				return NULL;
-			}
-
-			FILE *fptr = _fdopen(fd, mode);
-			if (!fptr) {
-				_close(fd);
-				return NULL;
-			}
-			return fptr;
-
-		}else {
-			return fopen(buf, mode);
-		}
+		return fopen(buf, mode);
 	}
 #else
-	if (restrict_read) {
-		FILE *fptr;
-		mode_t old_mask;
-
-		old_mask = umask(0077);
-		fptr = fopen(path, mode);
-		umask(old_mask);
-
-		return fptr;
-	}else{
-		return fopen(path, mode);
-	}
+	return fopen(path, mode);
 #endif
 }
 

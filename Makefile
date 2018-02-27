@@ -1,19 +1,59 @@
-CFLAGS=-Wall -ggdb -Ilib/cpp -Ilib
-LDFLAGS=-Llib lib/cpp/libmosquittopp.so.1 lib/libmosquitto.so.1 -lpthread
+CFLAGS=-Wall -ggdb -ILogging -ISerialize -IUnits -IUtilities -Ilib/mosq/cpp  -Ilib/mosq
+LDFLAGS=-Llib lib/mosq/cpp/libmosquittopp.so.1 lib/mosq/libmosquitto.so.1 -lpthread
 
-.PHONY: all clean
+DIRS=Logging Serialize Units
 
-all: fds
+LOGGING_OBJS=LogHandler.o
 
-fds: main.o MQTTConnector.o util.o
-	${CXX} $^ -o $@ ${LDFLAGS} `pkg-config --libs opencv`
+SERIALIZE_OBJS=BellData.o\
+				CameraData.o\
+				SmartBellData.o
+UNIT_OBJS=CameraHandler.o\
+				ClientAPI.o\
+				MQTTConnector.o
+
+.PHONY: all smartbell clean
+
+all: smartbell
+
+# smartbelllib :
+# 	set -e; for d in ${DIRS}; do $(MAKE) -C $${d}; done
+
+# smartbell: main.o Logging Serialize Units
+smartbell: main.o ${LOGGING_OBJS} ${SERIALIZE_OBJS} ${UNIT_OBJS}
+	${CXX} $^ -o $@ ${LDFLAGS} ${CFLAGS} `pkg-config --libs opencv` -lcurl
+
+# Logging
+Logging: ${LOGGING_OBJS}
+	# ${CXX} $^ -o $@ ${LDFLAGS} `pkg-config --libs opencv`
+	${CXX} -c -std=c++11 $^ -o $@ ${CFLAGS}
+LogHandler.o : Logging/LogHandler.cpp #Logging/LogHandler.h
+	${CXX} -c -std=c++11 $^ -o $@ ${CFLAGS}
+Logging.o : Logging/Logging.cpp #Logging/Logging.h
+	${CXX} -c -std=c++11 $^ -o $@ ${CFLAGS}
+
+# Serialize
+Serialize: ${SERIALIZE_OBJS}
+	${CXX} -c -std=c++11 $^ -o $@ ${CFLAGS}
+BellData.o : Serialize/BellData.cpp #Serialize/BellData.h
+	${CXX} -c -std=c++11 $^ -o $@ ${CFLAGS}
+CameraData.o : Serialize/CameraData.cpp #Serialize/CameraData.h
+	${CXX} -c -std=c++11 $^ -o $@ ${CFLAGS}
+SmartBellData.o : Serialize/SmartBellData.cpp #Serialize/SmartBellData.h
+	${CXX} -c -std=c++11 $^ -o $@ ${CFLAGS}
+
+#Units
+Units: ${UNIT_OBJS}
+	${CXX} -c -std=c++11 $^ -I/usr/local/include/opencv -I/usr/local/include -o $@ ${CFLAGS}
+CameraHandler.o : Units/CameraHandler.cpp  #Units/CameraHandler.h 
+	${CXX} -c -std=c++11 $^ -I/usr/local/include/opencv -I/usr/local/include -o $@ ${CFLAGS} 
+ClientAPI.o : Units/ClientAPI.cpp  #Units/ClientAPI.h  
+	${CXX} -c -std=c++11 $^ -o $@ ${CFLAGS} `pkg-config --cflags RapidJSON`
+MQTTConnector.o : Units/MQTTConnector.cpp  #Units/MQTTConnector.h
+	${CXX} -c -std=c++11 $^ -o $@ ${CFLAGS}
+
 
 main.o: main.cpp
-#	${CXX} -std=c++11 $^ `pkg-config --libs --cflags opencv` ${CFLAGS} -o $@ 
 	${CXX} -c -std=c++11 `pkg-config --cflags opencv` $^ -o $@ ${CFLAGS}
-MQTTConnector.o: MQTTConnector.cpp
-	${CXX} -c -std=c++11 $^ -o $@ ${CFLAGS}
-util.o: util.cpp
-	${CXX} -c -std=c++11 $^ -o $@ ${CFLAGS}
 clean : 
-	-rm -f *.o fds
+	-rm -f *.o smartbell
