@@ -1,0 +1,7 @@
+Lớp chụp hình từ camera (Hùng): Đã làm
++ Lớp giao tiếp MQTT: Đã làm từ trước
++ Lớp giao tiếp API +Bell Data (Hùng): 23/02
++ Xử lý chính + AppData (Hiệp): 23/02
++ Hỗ trợ Build (Hiệp): sau khi Hùng code xong 1 ngày
++ Hoàn thiện, kiểm thử và sửa lỗi (Hùng, Hiệp, Tú): 27/02
++ Tông hợp tài liệu ( Hùng + Hiệp) 28/02

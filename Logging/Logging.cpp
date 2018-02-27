@@ -25,7 +25,7 @@ void Log(int nLogLevel, const char *pztcContent){
     g_sLog.Log(nLogLevel, pztcContent);
 
 }
-void Log(int nLogLevel, std:string sContent){
+void Log(int nLogLevel, std::string sContent){
     g_sLog.Log(nLogLevel, sContent);
 }
 // Description: Thiết lấp mức độ hiển thị thông tin

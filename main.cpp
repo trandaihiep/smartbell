@@ -13,6 +13,11 @@ Contributors:
 #include "main.h"
 #include "ClientAPI.h"
 
+extern LogHandler g_sLog;
+extern SmartBellData*    g_pSmartBellData ;   // Application data
+extern bool           	g_bProcessing;    // Cờ báo việc đang xử lý dữ liệu
+extern MQTTConnector *  	m_pComControl;
+  
 ///************** MAIN PROCESS **************///
 int main(void)
 {
@@ -51,7 +56,7 @@ void InitializeData(){
 	mosqpp::lib_init();
 	std::string sAppServerIP = g_pSmartBellData->m_dConfig.sAppIP;
 	int nPort = g_pSmartBellData->m_dConfig.nPort;
-	m_pComControl = new MQTTConnector("SmartBell", sAppServerIP, nPort);
+	m_pComControl = new MQTTConnector("SmartBell", sAppServerIP.c_str(), nPort);
 	m_pComControl->SetGWListenAdr(g_pSmartBellData->m_dConfig.sGateWayListenAdr);
 	m_pComControl->SetGWAlarmAdr(g_pSmartBellData->m_dConfig.sGateWayAlarmAdr);
 	m_pComControl->addHandler(&ReceiveHandler);
@@ -67,7 +72,7 @@ void ReceiveHandler(std::string sReceiveData){
 	std::string sLogContent = "Receive: " + sReceiveData;
 	Log(LOG_INFO, sLogContent);
 	// Add to queue
-	PushBellData (sReceiveData);
+	g_pSmartBellData->PushBellData (sReceiveData);
 	// Xử lý dữ liệu
 	ProcessDataQueue();
 }
@@ -80,12 +85,14 @@ void ProcessDataQueue(){
 	if (g_bProcessing) return; // Chỉ cho phép 1 luồng xử lý
 	g_bProcessing = true; 
 
-	while(BellDataSize() != 0){
+	while(g_pSmartBellData->BellDataSize() != 0){
 		// Lấy dữ liệu chuông
-		BellData dBellDt = PopBellData();
-		if(dBellDt != NULL){
+		BellData dBellDt = g_pSmartBellData->PopBellData();
+		BellData * pBellData = new BellData();
+		*pBellData = dBellDt;
+		if(pBellData != NULL){
 			// Xử lý dữ liệu, chụp hình và gửi ảnh
-			ProcessBellDataCaptureImage(dBellDt);
+			ProcessBellDataCaptureImage(pBellData);
 		}
 		//std::this_thread::sleep_for(std::chrono::milliseconds(50));
 
@@ -102,8 +109,9 @@ void ProcessDataQueue(){
 void  ProcessBellDataCaptureImage(BellData* pBellDt){
 	if(pBellDt != NULL){
 		// Lấy danh sách camera và thêm vào dữ liệu chuông
-		ClientAPI.GetCameraList(pBellDt);
-		int nCameraCnt = pBellDt.GetCameraCount();
+		ClientAPI dClientApi;
+		dClientApi.GetCameraList(pBellDt);
+		int nCameraCnt = pBellDt->GetCameraCount();
 		CameraHandler arCameraHandler[nCameraCnt];
 		
 		// Chụp hình
@@ -113,12 +121,12 @@ void  ProcessBellDataCaptureImage(BellData* pBellDt){
 		}
 
 		// Chờ đợi chụp hình
-		for (int nCamIdx = 0; nCamIdx < nCameraCnt; nCamIdx++){
-			pthread_join(arCameraHandler[nCamIdx].m_thrCapture);
-		}
+		// for (int nCamIdx = 0; nCamIdx < nCameraCnt; nCamIdx++){
+		// 	pthread_join(arCameraHandler[nCamIdx].m_thrCapture);
+		// }
 		
 		// Lấy danh sách camera và thêm vào dữ liệu chuông
-		ClientAPI.PostImageInfo(pBellDt);
+		dClientApi.PostImageInfo(pBellDt);
 		// Xóa BellData
 		delete pBellDt;
 	}
@@ -137,7 +145,7 @@ void ReleaseData(){
 	if (m_pComControl != NULL){
 		m_pComControl->disconnect();
 		m_pComControl->loop_stop();
-		delete m_pComControl
+		delete m_pComControl;
 	}
 	mosqpp::lib_cleanup();
 }

@@ -63,7 +63,7 @@ void CameraHandler::SetCamdata(CameraData* pCamData){
 }
 
 
-int CameraHandler::SaveImage(){
+void CameraHandler::SaveImage(){
     cv::imwrite(m_pCamData->GetPath(),m_pCamData->GetImage());
 }
 // Description: Chụp hình từ camera
@@ -71,7 +71,7 @@ int CameraHandler::SaveImage(){
 //		
 // Return: None
 
-void *CameraHandler::CaptureImage(){
+CaptureResult CameraHandler::CaptureImage(){
      
 	if(!m_pCamData->GetMainURL().empty()){
         cv::VideoCapture cap(m_pCamData->GetMainURL(), cv::VideoCaptureAPIs::CAP_GSTREAMER);

@@ -18,13 +18,6 @@ Contributors:
 #include <stdio.h>
 #include <string.h>
 
-#ifdef WITH_BROKER
-#include <mosquitto_broker.h>
-#  ifdef WITH_SYS_TREE
-extern uint64_t g_pub_bytes_sent;
-#  endif
-#endif
-
 #include <mosquitto.h>
 #include <mosquitto_internal.h>
 #include <logging_mosq.h>
@@ -34,6 +27,13 @@ extern uint64_t g_pub_bytes_sent;
 #include <send_mosq.h>
 #include <time_mosq.h>
 #include <util_mosq.h>
+
+#ifdef WITH_BROKER
+#include <mosquitto_broker.h>
+#  ifdef WITH_SYS_TREE
+extern uint64_t g_pub_bytes_sent;
+#  endif
+#endif
 
 int _mosquitto_send_pingreq(struct mosquitto *mosq)
 {

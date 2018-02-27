@@ -23,7 +23,7 @@ enum CaptureResult{
     CAM_ERROR_CLOSE,            // Cannot open camera
     CAM_ERROR_EMPTY_FRAME,      // Empty frame
     CAM_ERROR_INVALID_URL,      // Invalib url
-}
+};
 
 ///**************  NAMESPACE **************///
 
@@ -37,16 +37,17 @@ class CameraHandler{
    private: 
         ///*************** FUCNTION **************///
         void SetCamdata(CameraData* pCamData);
-        void *CaptureImage();
-        int SaveImage();
+        CaptureResult CaptureImage();
+        void SaveImage();
         ///*************** VARIABLE **************///
         CameraData* m_pCamData;
-        pthread_t m_thrCapture;
    public:
         ///*************** FUCNTION **************///
         CameraHandler();
         virtual ~CameraHandler();
         int CaptureImage(CameraData* pCamData);
+        
+        pthread_t m_thrCapture;
         ///*************** VARIABLE **************///
 
 

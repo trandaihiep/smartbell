@@ -77,11 +77,11 @@ void SmartBellData::PushBellData(string sBellData)
 // Return: None
 BellData SmartBellData::PopBellData()
 {
+	BellData dBellData;
 	if (!m_qBellDataQueue.empty())  {
-		BellData dBellData = m_qBellDataQueue.front();
+		dBellData = m_qBellDataQueue.front();
 		m_qBellDataQueue.pop();
 		return dBellData;
 	}
-
-	return NULL;
+	return dBellData;
 }

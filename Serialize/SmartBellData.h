@@ -11,7 +11,9 @@ Lớp SmartBellData là lớp chứa dữ liệu của chương trình
 #ifndef SmartBellData_H_
 #define SmartBellData_H_
 ///****************  INCLUDE ***************///
-
+#include<string>
+#include<queue>
+#include <BellData.h>
 ///****************  DEFINE ****************///
 #define APP_SERVER "10.4.1.210"
 #define APP_PORT 1883
@@ -43,7 +45,7 @@ class SmartBellConfig{
 
 			return true;
 		};
-}
+};
 /*
  * Class: SmartBellData
  *

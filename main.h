@@ -24,7 +24,8 @@ Contributors:
 
 
 #include "MQTTConnector.h"
-#include "util.h"
+#include "SmartBellData.h"
+#include "CameraHandler.h"
 #include "Logging.h"
 
 ///****************  DEFINE ****************///
@@ -34,10 +35,10 @@ using namespace cv;
 using namespace std;
 using namespace std::chrono;
 ///***************  VARIABLE **************///
-extern static SmartBellData*    g_pSmartBellData = NULL;   // Application data
-extern static Logging           g_sLog;          // Write Log
-static bool                     g_bProcessing =  false;    // Cờ báo việc đang xử lý dữ liệu
-static MQTTConnector *          m_pComControl = NULL;
+extern SmartBellData*    g_pSmartBellData = NULL;   // Application data
+extern LogHandler        g_sLog;          // Write Log
+extern bool                     g_bProcessing =  false;    // Cờ báo việc đang xử lý dữ liệu
+extern MQTTConnector *          m_pComControl = NULL;
 ///*************** FUCNTION **************///
 
 void InitializeData(); 		// Khởi tạo dữ liệu

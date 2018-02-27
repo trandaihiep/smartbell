@@ -16,7 +16,6 @@ Ghi log
 #include <string>
 #include <ctime>
 
-LogHandler g_sLog;          // Write Log
 ///************** FUCNTION **************///
 // Description: 
 // Parameters: 
@@ -24,7 +23,7 @@ LogHandler g_sLog;          // Write Log
 // Return: None
 LogHandler::LogHandler()
 {
-	
+	m_byDisplayMode = LOG_DISP_INFO;
 }
 
 LogHandler::~LogHandler(){
@@ -36,7 +35,7 @@ void LogHandler::Log(unsigned int nLogLevel, const char *pztcContent){
     time_t now = time(0);
 
     // convert now to string form
-    std:string sDatetime = ctime(&now);
+    std::string sDatetime = ctime(&now);
     sDatetime.replace(sDatetime.end()-1,sDatetime.end(),""); 
     // Hiển thị log
     if ((nLogLevel & m_byDisplayMode ) != 0){
@@ -46,6 +45,6 @@ void LogHandler::Log(unsigned int nLogLevel, const char *pztcContent){
     // Ghi log ra file: Chưa code!!!
 }
 
-void LogHandler::Log(unsigned int nLogLevel, std:string sContent){
+void LogHandler::Log(unsigned int nLogLevel, std::string sContent){
     Log(nLogLevel, sContent.c_str());
 }

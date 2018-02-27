@@ -9,7 +9,10 @@ include_directories(${Units_SOURCE_DIR}
 			${OPENSSL_INCLUDE_DIR} ${PTHREAD_INCLUDE_DIR})
 
 add_library(Units SHARED
-    CameraHandler.cpp CameraHandler.h)
+	CameraHandler.cpp CameraHandler.h
+	MQTTConnector.cpp MQTTConnector.h
+	mosquittopp.cpp mosquittopp.h
+	)
 
 #add_executable(test_Units test_Units.cpp)
 
@@ -25,4 +28,4 @@ endif (UNIX)
 target_compile_options( Units PUBLIC -std=c++11 -fpermissive -w -Wall )
 
 #target_link_libraries( main_test Units -L/usr/lib64 -ldl )
-target_link_libraries( Units Logging SmartBell )
+target_link_libraries( Units Logging SmartBell libmosquitto )
