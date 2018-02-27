@@ -64,7 +64,7 @@ void CameraHandler::SetCamdata(CameraData* pCamData){
 
 
 void CameraHandler::SaveImage(){
-    cv::imwrite(m_pCamData->GetPath(),m_pCamData->GetImage());
+    cv::imwrite(IMAGE_DIR + m_pCamData->GetCamID() + "/" + m_pCamData->GetPath(),m_pCamData->GetImage());
 }
 // Description: Chụp hình từ camera
 // Parameters: 
@@ -113,7 +113,11 @@ int CameraHandler::CaptureImage(CameraData* pCamData){
     SetCamdata(pCamData);
     // Chụp hình
     //pthread_create(m_thrCapture,NULL,&CaptureImage,NULL); // Đa luồng
-    CaptureImage();// Đơn luồng
+    CaptureResult returncode = CaptureImage();
+    if(returncode)
+    {       
+        return returncode;
+    };// Đơn luồng
     // Lưu hình
     SaveImage();
 }

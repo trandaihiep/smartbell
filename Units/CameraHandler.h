@@ -24,7 +24,7 @@ enum CaptureResult{
     CAM_ERROR_EMPTY_FRAME,      // Empty frame
     CAM_ERROR_INVALID_URL,      // Invalib url
 };
-
+#define IMAGE_DIR "/var/www/html/img/"
 ///**************  NAMESPACE **************///
 
 /*
