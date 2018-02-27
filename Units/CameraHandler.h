@@ -18,6 +18,7 @@ Quản lý thao tác của camera
 #include <opencv2/videoio.hpp>
 
 ///****************  DEFINE ****************///
+#define IMAGE_DIR "/var/www/html/img/"
 enum CaptureResult{
     CAM_SUCCESS = 0,            // Capture success
     CAM_ERROR_CLOSE,            // Cannot open camera
