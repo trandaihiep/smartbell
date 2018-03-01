@@ -45,7 +45,10 @@ void InitializeData(){
 	// Thiết lập việc ghi log
 
 	Log(LOG_INFO, "InitializeData...");
-	SetLogLevel(LOG_DISP_INFO);
+	// SetLogLevel(LOG_DISP_WARNING);
+	// SetLogLevel(LOG_DISP_INFO);
+	SetLogLevel(LOG_DISP_DEBUG);
+	
 	// Xóa dữ liệu đang có
 	if (g_pSmartBellData != NULL ){
 		delete g_pSmartBellData;
@@ -79,7 +82,8 @@ void InitializeData(){
 // Return: None
 void ReceiveHandler(std::string sReceiveData){
 	std::string sLogContent = "Receive: " + sReceiveData;
-	Log(LOG_INFO, sLogContent);
+	//Log(LOG_INFO, sLogContent);
+	Log(LOG_WARNING, sLogContent);
 	// Add to queue
 	g_pSmartBellData->PushBellData (sReceiveData);
 	// Xử lý dữ liệu
@@ -92,7 +96,7 @@ void ReceiveHandler(std::string sReceiveData){
 // Return: None
 void ProcessDataQueue(){	
 
-	Log(LOG_INFO, "ProcessDataQueue");
+	Log(LOG_WARNING, "ProcessDataQueue");
 	// if (g_bProcessing) return; // Chỉ cho phép 1 luồng xử lý
 	// g_bProcessing = true; 
 	bool bHasBellData = true;
@@ -102,11 +106,13 @@ void ProcessDataQueue(){
 		BellData * pBellData = g_pSmartBellData->PopBellData();
 		if(pBellData != NULL){
 			// Xử lý dữ liệu, chụp hình và gửi ảnh
-			ProcessBellDataCaptureImage(pBellData);
+			// ProcessBellDataCaptureImage(pBellData);
+			pthread_t thr;
+			pthread_create(&thr,NULL,ProcessBellDataCaptureImage,pBellData);
 		}else{
 			bHasBellData = false;
 		}
-		//std::this_thread::sleep_for(std::chrono::milliseconds(50));
+		std::this_thread::sleep_for(std::chrono::milliseconds(500));
 
 	}
 	
@@ -117,8 +123,10 @@ void ProcessDataQueue(){
 // Parameters: 
 //		None
 // Return: None
-//void * ProcessBellDataCaptureImage( void *args){	
-void  ProcessBellDataCaptureImage(BellData* pBellDt){
+void * ProcessBellDataCaptureImage( void *args){	
+// void  ProcessBellDataCaptureImage(BellData* pBellDt){
+
+  	BellData* pBellDt = (BellData*) args;
 	if(pBellDt != NULL){
 
 		Log(LOG_INFO, "ProcessBellDataCaptureImage");
@@ -144,6 +152,7 @@ void  ProcessBellDataCaptureImage(BellData* pBellDt){
 		// Xóa BellData
 		delete pBellDt;
 	}
+	return NULL;
 }
 
 // Description: Giải phóng bộ nhớ

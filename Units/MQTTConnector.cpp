@@ -58,14 +58,15 @@ void MQTTConnector::on_connect(int rc)
 void MQTTConnector::on_message(const struct mosquitto_message *message)
 {
 	char buf[BUFSIZE];
-	if(!strcmp(message->topic, m_sGateWayListenAdr.c_str())){
+	// if(!strcmp(message->topic, m_sGateWayListenAdr.c_str())){
 		memset(buf, 0, BUFSIZE*sizeof(char));
 		/* Copy N-1 bytes to ensure always 0 terminated. */
 		memcpy(buf, message->payload, 200*sizeof(char));
 		//printf("Buffer: %s\n", buf);
-		m_strHandlerFunction(buf);
+		m_strHandlerFunction(buf
+		);
 		//publish(NULL, "temperature/farenheit", strlen(buf), buf);
-	}
+	// }
 }
 
 // Description: 

@@ -14,39 +14,12 @@ Lớp SmartBellData là lớp chứa dữ liệu của chương trình
 #include<string>
 #include<queue>
 #include <BellData.h>
+#include <SmartBellConfig.h>
 #include <pthread.h>
 ///****************  DEFINE ****************///
-#define APP_SERVER "10.4.1.210"
-#define APP_PORT 1883
-#define GW_LISTEN "/SCPCloud/DEVICE/FD445E29"		//Where to collect sensor data
-#define GW_ALARM "/SCPCloud/DEVICE/509a4c5912d3"	//Where to push warning to server
 
-#define IMG_DIR_PATH "/var/www/html/img/"
-#define CONFIG_FILE_PATH "~/.smartbell/config"
 ///**************  NAMESPACE **************///
 using namespace std;
-/*
- * Structure: SmartBellConfig
- *  Các thiết lập của phần mềm
- *  
- */
-class SmartBellConfig{
-	public:
-		std::string sAppIP 	= APP_SERVER;	// Aplication IP (Netsoft server IP)
-		int 		nPort 	= APP_PORT;	// Port (Netsoft port)
-		std::string sGateWayListenAdr 	= GW_LISTEN;	//GateWay listen address
-		std::string sGateWayAlarmAdr 	= GW_ALARM; //GateWay publish address
-		std::string sImagePath	 		= IMG_DIR_PATH;// Direction path, where store image
-		std::string sConfigFilePath	 	= CONFIG_FILE_PATH;// Direction path, where store image
-		bool ReadConfigParam(string sConfigFilePath = CONFIG_FILE_PATH){
-
-			return true;
-		};
-		bool WriteConfigParam(){
-
-			return true;
-		};
-};
 /*
  * Class: SmartBellData
  *

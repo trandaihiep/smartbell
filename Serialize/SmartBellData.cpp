@@ -4,7 +4,7 @@ All rights reserved. This program and the accompanying materials
 are made available under the terms of GNU GPL v3 which accompany this distribution.
 
 * Description:
-Lớp SmartBellData là lớp bao của lớp mosquitto nhằm cung cấp các giao thức gửi và nhận mesage trong IOT
+Lớp SmartBellData chứa dữ liệu ứng dụng
 
 *Contributors:
    Tran Dai Hiep:	01-Feb-2018: Initial implementation and documentation.

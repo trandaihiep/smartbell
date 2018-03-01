@@ -8,7 +8,9 @@ LOGGING_OBJS=LogHandler.o\
 
 SERIALIZE_OBJS=BellData.o\
 				CameraData.o\
-				SmartBellData.o
+				SmartBellData.o\
+				SmartBellConfig.o\
+				Config.o
 UNIT_OBJS=CameraHandler.o\
 				ClientAPI.o\
 				MQTTConnector.o
@@ -41,6 +43,10 @@ BellData.o : Serialize/BellData.cpp #Serialize/BellData.h
 CameraData.o : Serialize/CameraData.cpp #Serialize/CameraData.h
 	${CXX} -c -std=c++11 $^ -o $@ ${CFLAGS}
 SmartBellData.o : Serialize/SmartBellData.cpp #Serialize/SmartBellData.h
+	${CXX} -c -std=c++11 $^ -o $@ ${CFLAGS}
+SmartBellConfig.o : Serialize/SmartBellConfig.cpp 
+	${CXX} -c -std=c++11 $^ -o $@ ${CFLAGS}
+Config.o : Serialize/Config.cpp 
 	${CXX} -c -std=c++11 $^ -o $@ ${CFLAGS}
 
 #Units

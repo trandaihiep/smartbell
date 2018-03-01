@@ -35,11 +35,11 @@ source ~/.bashrc
   
 ############ For Python 2 ############
 # create virtual environment
-mkvirtualenv facecourse-py2 -p python2
-workon facecourse-py2
+sudo mkvirtualenv facecourse-py2 -p python2
+sudo workon facecourse-py2
   
 # now install python libraries within this virtual environment
-pip install numpy scipy matplotlib scikit-image scikit-learn ipython
+sudo pip install numpy scipy matplotlib scikit-image scikit-learn ipython
   
 # quit virtual environment
 deactivate
@@ -47,8 +47,8 @@ deactivate
   
 ############ For Python 3 ############
 # create virtual environment
-mkvirtualenv facecourse-py3 -p python3
-workon facecourse-py3
+sudo mkvirtualenv facecourse-py3 -p python3
+sudo workon facecourse-py3
   
 # now install python libraries within this virtual environment
 pip install numpy scipy matplotlib scikit-image scikit-learn ipython
@@ -56,8 +56,8 @@ pip install numpy scipy matplotlib scikit-image scikit-learn ipython
 # quit virtual environment
 deactivate
 ######################################
-git clone https://github.com/opencv/opencv_contrib.git
-git clone https://github.com/opencv/opencv.git
+sudo git clone https://github.com/opencv/opencv_contrib.git
+sudo git clone https://github.com/opencv/opencv.git
 cd opencv 
 git checkout 3.3.1 
 cd ..
@@ -70,7 +70,7 @@ mkdir build
 cd build
 
 #Run CMake 
-cmake -D CMAKE_BUILD_TYPE=RELEASE \
+sudo cmake -D CMAKE_BUILD_TYPE=RELEASE \
       -D CMAKE_INSTALL_PREFIX=/usr/local \
       -D INSTALL_C_EXAMPLES=ON \
       -D INSTALL_PYTHON_EXAMPLES=ON \

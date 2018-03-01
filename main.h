@@ -45,8 +45,8 @@ void ProcessDataQueue(); 	// Xử lý
 void ReleaseData();			// Giải phóng bộ nhớ
 void ReceiveHandler(std::string sReceiveData); // Xử lý dữ liệu nhận được
 
-//void * ProcessBellDataCaptureImage( void *args);
-void ProcessBellDataCaptureImage(BellData* pBellDt);
+void * ProcessBellDataCaptureImage( void *args);
+// void ProcessBellDataCaptureImage(BellData* pBellDt);
 void ProcessDataQueue();
 
 #endif  // SMARTBELL_MAIN_H_

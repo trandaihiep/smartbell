@@ -18,11 +18,13 @@ LogHandler xuất bản ghi thông tin (log)
 #define LOG_ERROR 	0x01 //0b0000001
 #define LOG_WARNING 0x02 //0b0000010
 #define LOG_INFO 	0x04 //0b0000100
+#define LOG_DEBUG	0x08 //0b0001000
 
 #define LOG_DISP_NONE 		0
 #define LOG_DISP_ERROR 		LOG_ERROR
 #define LOG_DISP_WARNING 	LOG_ERROR|LOG_WARNING
 #define LOG_DISP_INFO 		LOG_ERROR|LOG_WARNING|LOG_INFO
+#define LOG_DISP_DEBUG		LOG_ERROR|LOG_WARNING|LOG_INFO|LOG_DEBUG
 
 
 ///**************  NAMESPACE **************///
@@ -43,6 +45,8 @@ class LogHandler{
 					return "WARN";
 				case LOG_INFO:
 					return "INFO";
+				case LOG_DEBUG:
+					return "DEBUG";
 				default:
 					return "INDETERMINE";
 			}
