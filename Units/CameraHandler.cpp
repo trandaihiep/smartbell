@@ -127,10 +127,11 @@ int CameraHandler::CaptureImage(CameraData* pCamData){
     //thread_create(&m_thrCapture,NULL,&CameraHandler::CaptureThread,NULL); // Đa luồng
     CaptureResult returncode = CaptureImage();
     if(returncode)
-    {       
+    {   std::cout << "Capture return: " << returncode << std::endl;
         return returncode;
     };// Đơn luồng
     // Lưu hình
     //SaveImage();
+    std::cout << "Capture success! " << std::endl;
     return 0;
 }

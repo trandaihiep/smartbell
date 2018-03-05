@@ -27,7 +27,8 @@ int main(void)
 	// Xử lý dữ liệu
 	ProcessDataQueue();
 	//Chờ nhận
-	while (true){
+	while (true)
+	{
 		std::this_thread::sleep_until(std::chrono::system_clock::now() + std::chrono::hours(std::numeric_limits<int>::max()));
 	}
 	// Giải phóng bộ nhớ khi kết thúc việc xử lý
@@ -62,7 +63,7 @@ void InitializeData(){
 	std::string sAppServerIP = g_pSmartBellData->m_dConfig.sAppIP;
 
 	int nPort = g_pSmartBellData->m_dConfig.nPort;
-	m_pComControl = new MQTTConnector("SmartBell", sAppServerIP.c_str(), nPort);
+	m_pComControl = new MQTTConnector("SmartBell1", sAppServerIP.c_str(), nPort);
 	m_pComControl->SetGWListenAdr(g_pSmartBellData->m_dConfig.sGateWayListenAdr);
 	m_pComControl->SetGWAlarmAdr(g_pSmartBellData->m_dConfig.sGateWayAlarmAdr);
 	m_pComControl->addHandler(&ReceiveHandler);
@@ -107,8 +108,9 @@ void ProcessDataQueue(){
 		if(pBellData != NULL){
 			// Xử lý dữ liệu, chụp hình và gửi ảnh
 			// ProcessBellDataCaptureImage(pBellData);
-			pthread_t thr;
-			pthread_create(&thr,NULL,ProcessBellDataCaptureImage,pBellData);
+			//pthread_t thr;
+			//pthread_create(&thr,NULL,ProcessBellDataCaptureImage,pBellData);
+			StartCaptureImage(pBellData);
 		}else{
 			bHasBellData = false;
 		}
@@ -153,6 +155,55 @@ void * ProcessBellDataCaptureImage( void *args){
 		delete pBellDt;
 	}
 	return NULL;
+}
+
+// Description: Capture iamges, push path to API server
+// Parameters: 
+//		None
+// Return: None
+void  StartCaptureImage( void *args){
+
+  	BellData* pBellDt = (BellData*) args;
+	if(pBellDt != NULL){
+
+		Log(LOG_INFO, "StartCaptureImage");
+		// Lấy danh sách camera và thêm vào dữ liệu chuông
+		ClientAPI dClientApi;
+		dClientApi.GetCameraList(pBellDt);
+		int nCameraCnt = pBellDt->GetCameraCount();
+		//CameraHandler arCameraHandler[nCameraCnt];
+		std::thread arThread[nCameraCnt];
+		// Chụp hình
+		for (int nCamIdx = 0; nCamIdx < nCameraCnt; nCamIdx++){
+			CameraData dCamera = pBellDt->GetCameraData(nCamIdx);
+			//CameraData *pCamData = &dCamera;
+			//pthread_t thr;
+			arThread[nCamIdx] = std::thread(pCaptureImage, dCamera);
+			//pthread_create(&thr,NULL,pCaptureImage,dCamera);
+			//arCameraHandler[nCamIdx].CaptureImage(&dCamera);
+		}
+		// Lấy danh sách camera và thêm vào dữ liệu chuông
+		dClientApi.PostImageInfo(pBellDt);
+		// Chờ đợi chụp hình
+		for (int nCamIdx = 0; nCamIdx < nCameraCnt; nCamIdx++){
+			arThread[nCamIdx].join();
+			std::cout << "Joined thread " << nCamIdx << " ,ID: " << std::this_thread::get_id() << std::endl;
+		}
+		// Xóa BellData
+		delete pBellDt;
+	}
+}
+
+
+void pCaptureImage(CameraData CamDt){
+// void  ProcessBellDataCaptureImage(BellData* pBellDt){
+	//CameraData* pCamDt = (CameraData*) args;
+	//std::cout << "Camdata: " << CamDt.GetCamID() << std::endl;
+	//std::cout << "URLdata: " << CamDt.GetMainURL() << std::endl;
+	CameraHandler CamHandler;
+	CamHandler.CaptureImage(&CamDt);
+  	std::cout << "Thread : " << std::this_thread::get_id() << std::endl;
+	//return NULL;
 }
 
 // Description: Giải phóng bộ nhớ
