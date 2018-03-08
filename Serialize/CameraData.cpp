@@ -11,7 +11,7 @@ This file contain camera data and provide data access methods
 *****************************************/
 ///****************  INCLUDE ***************///
 #include "CameraData.h"
-
+#include <iostream>
 /*
  * Class: CameraData
 ///************** FUCNTION **************///
@@ -28,7 +28,6 @@ CameraData::CameraData(){
 //
 // Return: None
 CameraData::~CameraData(){
-  
 }
 
 // Description: 

@@ -31,6 +31,7 @@ CameraHandler::CameraHandler()
 // Return: None
 CameraHandler::~CameraHandler()
 {
+
 }
 
 // Description: Chụp hình từ camera
@@ -68,10 +69,11 @@ void CameraHandler::SetCamdata(CameraData *pCamData)
 void CameraHandler::SaveImage()
 {
     std::string img_directory = IMAGE_DIR + m_pCamData->GetCamID(); // + "/";
-    std::cout << "Write Image to: " << img_directory << std::endl;
+    //std::cout << "Write Image to: " << img_directory << std::endl;
     if (!fs::exists(img_directory))
         fs::create_directory(img_directory);
     cv::imwrite(img_directory + "/" + m_pCamData->GetPath(), m_pCamData->GetImage());
+    
 }
 
 // Description: Chụp hình từ camera
@@ -93,7 +95,9 @@ CaptureResult CameraHandler::CaptureImage()
     {
         try
         {
+            //std::cout << "Capture main" << std::endl;
             cv::VideoCapture cap(m_pCamData->GetMainURL(), cv::VideoCaptureAPIs::CAP_GSTREAMER);
+            //std::cout << "Got mainURL" << std::endl;
             if (cap.isOpened())
             {
                 cv::Mat frame;

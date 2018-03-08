@@ -172,24 +172,27 @@ void  StartCaptureImage( void *args){
 		dClientApi.GetCameraList(pBellDt);
 		int nCameraCnt = pBellDt->GetCameraCount();
 		//CameraHandler arCameraHandler[nCameraCnt];
+		CameraData arCamData[nCameraCnt];
 		std::thread arThread[nCameraCnt];
 		// Chụp hình
 		for (int nCamIdx = 0; nCamIdx < nCameraCnt; nCamIdx++){
-			CameraData dCamera = pBellDt->GetCameraData(nCamIdx);
+			arCamData[nCamIdx] = pBellDt->GetCameraData(nCamIdx);
 			//CameraData *pCamData = &dCamera;
 			//pthread_t thr;
-			arThread[nCamIdx] = std::thread(pCaptureImage, dCamera);
+			arThread[nCamIdx] = std::thread(pCaptureImage, arCamData[nCamIdx]);
+			arThread[nCamIdx].detach();
 			//pthread_create(&thr,NULL,pCaptureImage,dCamera);
 			//arCameraHandler[nCamIdx].CaptureImage(&dCamera);
 		}
 		// Lấy danh sách camera và thêm vào dữ liệu chuông
 		dClientApi.PostImageInfo(pBellDt);
 		// Chờ đợi chụp hình
-		for (int nCamIdx = 0; nCamIdx < nCameraCnt; nCamIdx++){
-			arThread[nCamIdx].join();
-			std::cout << "Joined thread " << nCamIdx << " ,ID: " << std::this_thread::get_id() << std::endl;
-		}
+		// for (int nCamIdx = 0; nCamIdx < nCameraCnt; nCamIdx++){
+		// 	arThread[nCamIdx].join();
+		// 	std::cout << "Joined thread " << nCamIdx << " ,ID: " << std::this_thread::get_id() << std::endl;
+		// }
 		// Xóa BellData
+		std::cout << "Delete BellDt" << std::endl;
 		delete pBellDt;
 	}
 }
@@ -202,7 +205,7 @@ void pCaptureImage(CameraData CamDt){
 	//std::cout << "URLdata: " << CamDt.GetMainURL() << std::endl;
 	CameraHandler CamHandler;
 	CamHandler.CaptureImage(&CamDt);
-  	std::cout << "Thread : " << std::this_thread::get_id() << std::endl;
+  	//std::cout << "Thread : " << std::this_thread::get_id() << std::endl;
 	//return NULL;
 }
 
