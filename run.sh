@@ -1,3 +1,3 @@
 #!/bin/bash
 make
-echo -e "\n" | ./fds
+echo -e "\n" | ./smartbell

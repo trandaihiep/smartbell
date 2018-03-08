@@ -107,63 +107,22 @@ void ProcessDataQueue(){
 		BellData * pBellData = g_pSmartBellData->PopBellData();
 		if(pBellData != NULL){
 			// Xử lý dữ liệu, chụp hình và gửi ảnh
-			// ProcessBellDataCaptureImage(pBellData);
-			//pthread_t thr;
-			//pthread_create(&thr,NULL,ProcessBellDataCaptureImage,pBellData);
 			StartCaptureImage(pBellData);
 		}else{
 			bHasBellData = false;
 		}
-		std::this_thread::sleep_for(std::chrono::milliseconds(500));
-
+		//std::this_thread::sleep_for(std::chrono::milliseconds(500));
 	}
 	
 	g_bProcessing = false;
-}
-
-// Description: Chờ xử lý dữ liệu nhận được
-// Parameters: 
-//		None
-// Return: None
-void * ProcessBellDataCaptureImage( void *args){	
-// void  ProcessBellDataCaptureImage(BellData* pBellDt){
-
-  	BellData* pBellDt = (BellData*) args;
-	if(pBellDt != NULL){
-
-		Log(LOG_INFO, "ProcessBellDataCaptureImage");
-		// Lấy danh sách camera và thêm vào dữ liệu chuông
-		ClientAPI dClientApi;
-		dClientApi.GetCameraList(pBellDt);
-		int nCameraCnt = pBellDt->GetCameraCount();
-		CameraHandler arCameraHandler[nCameraCnt];
-		
-		// Chụp hình
-		for (int nCamIdx = 0; nCamIdx < nCameraCnt; nCamIdx++){
-			CameraData dCamera = pBellDt->GetCameraData(nCamIdx);
-			arCameraHandler[nCamIdx].CaptureImage(&dCamera);
-		}
-
-		// Chờ đợi chụp hình
-		// for (int nCamIdx = 0; nCamIdx < nCameraCnt; nCamIdx++){
-		// 	pthread_join(arCameraHandler[nCamIdx].m_thrCapture);
-		// }
-		
-		// Lấy danh sách camera và thêm vào dữ liệu chuông
-		dClientApi.PostImageInfo(pBellDt);
-		// Xóa BellData
-		delete pBellDt;
-	}
-	return NULL;
 }
 
 // Description: Capture iamges, push path to API server
 // Parameters: 
 //		None
 // Return: None
-void  StartCaptureImage( void *args){
+void  StartCaptureImage( BellData *pBellDt){
 
-  	BellData* pBellDt = (BellData*) args;
 	if(pBellDt != NULL){
 
 		Log(LOG_INFO, "StartCaptureImage");
@@ -172,36 +131,37 @@ void  StartCaptureImage( void *args){
 		dClientApi.GetCameraList(pBellDt);
 		int nCameraCnt = pBellDt->GetCameraCount();
 		//CameraHandler arCameraHandler[nCameraCnt];
-		std::thread arThread[nCameraCnt];
+		//CameraData arCamera[nCameraCnt];
+		pthread_t ar_pThread[nCameraCnt];
 		// Chụp hình
-		for (int nCamIdx = 0; nCamIdx < nCameraCnt; nCamIdx++){
-			CameraData dCamera = pBellDt->GetCameraData(nCamIdx);
-			//CameraData *pCamData = &dCamera;
-			//pthread_t thr;
-			arThread[nCamIdx] = std::thread(pCaptureImage, dCamera);
-			//pthread_create(&thr,NULL,pCaptureImage,dCamera);
-			//arCameraHandler[nCamIdx].CaptureImage(&dCamera);
+		for (int nCamIdx = 0; nCamIdx < nCameraCnt; nCamIdx++)
+		{
+			//arCamera[nCamIdx] = pBellDt->GetCameraData(nCamIdx);
+			pthread_create(&ar_pThread[nCamIdx],NULL,pCaptureImage,(void *) pBellDt->GetCameraPointer(nCamIdx));
 		}
 		// Lấy danh sách camera và thêm vào dữ liệu chuông
 		dClientApi.PostImageInfo(pBellDt);
-		// Chờ đợi chụp hình
-		for (int nCamIdx = 0; nCamIdx < nCameraCnt; nCamIdx++){
-			arThread[nCamIdx].join();
-			std::cout << "Joined thread " << nCamIdx << " ,ID: " << std::this_thread::get_id() << std::endl;
-		}
+		// for (int nCamIdx = 0; nCamIdx < nCameraCnt; nCamIdx++){
+		// 	void *status;
+		// 	pthread_join(ar_pThread[nCamIdx], &status);
+		// 	std::cout << "Joined thread " << nCamIdx << " ,ID: " << std::this_thread::get_id() << std::endl;
+		// }
+		//std::this_thread::sleep_for(std::chrono::milliseconds(500));
+		std::cout << "Delete Bell" << std::endl;
 		// Xóa BellData
-		delete pBellDt;
+		//delete pBellDt;
 	}
 }
 
 
-void pCaptureImage(CameraData CamDt){
+void* pCaptureImage(void *args){
 // void  ProcessBellDataCaptureImage(BellData* pBellDt){
-	//CameraData* pCamDt = (CameraData*) args;
-	//std::cout << "Camdata: " << CamDt.GetCamID() << std::endl;
-	//std::cout << "URLdata: " << CamDt.GetMainURL() << std::endl;
+	CameraData* pCamDt = (CameraData*) args;
+	std::cout << "Address: " << pCamDt << std::endl;
+	std::cout << "Camdata: " << pCamDt->GetCamID() << std::endl;
+	std::cout << "URLdata: " << pCamDt->GetMainURL() << std::endl;
 	CameraHandler CamHandler;
-	CamHandler.CaptureImage(&CamDt);
+	CamHandler.CaptureImage(pCamDt);
   	std::cout << "Thread : " << std::this_thread::get_id() << std::endl;
 	//return NULL;
 }

@@ -68,7 +68,7 @@ void CameraHandler::SetCamdata(CameraData *pCamData)
 void CameraHandler::SaveImage()
 {
     std::string img_directory = IMAGE_DIR + m_pCamData->GetCamID(); // + "/";
-    std::cout << "Write Image to: " << img_directory << std::endl;
+    std::cout << "Write Image to: " << img_directory + "/" + m_pCamData->GetPath() << std::endl;
     if (!fs::exists(img_directory))
         fs::create_directory(img_directory);
     cv::imwrite(img_directory + "/" + m_pCamData->GetPath(), m_pCamData->GetImage());
@@ -91,6 +91,7 @@ CaptureResult CameraHandler::CaptureImage()
 
     if (!m_pCamData->GetMainURL().empty())
     {
+        std::cout << "Capture mainURL" << std::endl;
         try
         {
             cv::VideoCapture cap(m_pCamData->GetMainURL(), cv::VideoCaptureAPIs::CAP_GSTREAMER);
@@ -116,6 +117,7 @@ CaptureResult CameraHandler::CaptureImage()
     {
         try
         {
+            std::cout << "Capture subURL" << std::endl;
             cv::VideoCapture cap(m_pCamData->GetSubURL(), cv::VideoCaptureAPIs::CAP_GSTREAMER);
             if (cap.isOpened())
             {

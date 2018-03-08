@@ -45,9 +45,8 @@ void ProcessDataQueue(); 	// Xử lý
 void ReleaseData();			// Giải phóng bộ nhớ
 void ReceiveHandler(std::string sReceiveData); // Xử lý dữ liệu nhận được
 
-void * ProcessBellDataCaptureImage( void *args);
-void  StartCaptureImage( void *args);
-void pCaptureImage( CameraData CamDt);
+void  StartCaptureImage( BellData *args);
+void* pCaptureImage( void *CamDt);
 //void * pCaptureImage( void *args);
 // void ProcessBellDataCaptureImage(BellData* pBellDt);
 void ProcessDataQueue();

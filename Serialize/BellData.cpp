@@ -87,6 +87,15 @@ unsigned int BellData::GetCameraCount(){
 CameraData BellData::GetCameraData(unsigned int unCameraIndex){
     return m_arpCameraData[unCameraIndex];
 }
+
+// Description: Return CameraData's address
+// Parameters: 
+//
+// Return: None
+CameraData* BellData::GetCameraPointer(unsigned int unCameraIndex)
+{
+    return &m_arpCameraData[unCameraIndex];
+}
 // Description: Thêm dữ liệu camera
 // Parameters: 
 //

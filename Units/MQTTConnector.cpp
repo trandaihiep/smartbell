@@ -47,7 +47,7 @@ void MQTTConnector::on_connect(int rc)
 	if(rc == 0)
 	{
 		/* Only attempt to subscribe on a successful connect. */
-		subscribe(NULL, m_sGateWayListenAdr.c_str());
+		subscribe(NULL, m_sGateWayListenAdr.c_str(), 1);
 	}
 }
 

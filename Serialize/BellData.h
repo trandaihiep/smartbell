@@ -41,7 +41,7 @@ class BellData {
 
    private: //// PRIVATE
         ///*************** FUCNTION **************///
-std::vector<std::string> Split (const std::string input,char delim);
+        std::vector<std::string> Split (const std::string input,char delim);
 
         ///*************** VARIABLE **************///
         BellInfo m_dBellInfo;
@@ -59,7 +59,7 @@ std::vector<std::string> Split (const std::string input,char delim);
         CameraData GetCameraData(unsigned int unCameraIndex);
         bool AddCameraData(CameraData dCamDt);
         // bool RemoveCameraData(unsigned int unCameraIndex);
-
+        CameraData* GetCameraPointer(unsigned int unCameraIndex);
         ///*************** VARIABLE **************///
 };
 #endif
