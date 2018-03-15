@@ -67,7 +67,7 @@ int ClientAPI::GetCameraList(BellData* pBellData){
 int ClientAPI::PostImageInfo(BellData* pBellData){
     if (pBellData == NULL)
         return 1;
-    Log(LOG_INFO, "PostImageInfo");
+    //Log(LOG_INFO, "PostImageInfo");
     for(unsigned int i=0; i < pBellData->GetCameraCount(); i++)
     {
         std::string tempString = "{\"id_Bell\":\"" + pBellData->GetBellInfo().sBellID + "\", "
@@ -144,10 +144,10 @@ CameraData ClientAPI::ParseJSONObject(std::string sJSONObject)
 
 std::string ClientAPI::CurlExecute(std::string url, std::string type, std::string data)
 {
-    std::string sLogContent = "[ClientAPI]URL: " + url;
-    Log(LOG_INFO, sLogContent);
-    sLogContent = "[ClientAPI]Data: " + data;
-    Log(LOG_INFO, sLogContent);
+    //std::string sLogContent = "[ClientAPI]URL: " + url;
+    //Log(LOG_INFO, sLogContent);
+    //sLogContent = "[ClientAPI]Data: " + data;
+    //Log(LOG_INFO, sLogContent);
   CURL *curl;
   CURLcode res;
   std::string readBuffer = "";

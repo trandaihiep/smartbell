@@ -156,11 +156,11 @@ int CameraHandler::CaptureImage(CameraData *pCamData)
     CaptureResult returncode = CaptureImage();
     if (returncode)
     {
-        std::cout << "Capture return: " << returncode << std::endl;
+        std::cout << "Capture CamID" << pCamData->GetCamID() << " fail, return: " << returncode << std::endl;
         return returncode;
     }; // Đơn luồng
     // Lưu hình
     //SaveImage();
-    std::cout << "Capture success! " << std::endl;
+    std::cout << "Capture success: " << pCamData->GetCamID() << std::endl;
     return 0;
 }

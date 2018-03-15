@@ -97,7 +97,7 @@ void ReceiveHandler(std::string sReceiveData){
 // Return: None
 void ProcessDataQueue(){	
 
-	Log(LOG_WARNING, "ProcessDataQueue");
+	//Log(LOG_WARNING, "ProcessDataQueue");
 	// if (g_bProcessing) return; // Chỉ cho phép 1 luồng xử lý
 	// g_bProcessing = true; 
 	bool bHasBellData = true;
@@ -131,7 +131,7 @@ void * ProcessBellDataCaptureImage( void *args){
   	BellData* pBellDt = (BellData*) args;
 	if(pBellDt != NULL){
 
-		Log(LOG_INFO, "ProcessBellDataCaptureImage");
+		//Log(LOG_INFO, "ProcessBellDataCaptureImage");
 		// Lấy danh sách camera và thêm vào dữ liệu chuông
 		ClientAPI dClientApi;
 		dClientApi.GetCameraList(pBellDt);
@@ -166,7 +166,7 @@ void  StartCaptureImage( void *args){
   	BellData* pBellDt = (BellData*) args;
 	if(pBellDt != NULL){
 
-		Log(LOG_INFO, "StartCaptureImage");
+		//Log(LOG_INFO, "StartCaptureImage");
 		// Lấy danh sách camera và thêm vào dữ liệu chuông
 		ClientAPI dClientApi;
 		dClientApi.GetCameraList(pBellDt);
@@ -192,7 +192,7 @@ void  StartCaptureImage( void *args){
 		// 	std::cout << "Joined thread " << nCamIdx << " ,ID: " << std::this_thread::get_id() << std::endl;
 		// }
 		// Xóa BellData
-		std::cout << "Delete BellDt" << std::endl;
+		//std::cout << "Delete BellDt" << std::endl;
 		delete pBellDt;
 	}
 }
