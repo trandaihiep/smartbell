@@ -13,6 +13,7 @@ Xử lý tác vụ của camera
 ///****************  INCLUDE ***************///
 #include "ClientAPI.h"
 #include <iostream>
+#include <CkStringBuilder.h>
 
 static size_t WriteCallback(void *contents, size_t size, size_t nmemb, void *userp)
 {
@@ -142,6 +143,18 @@ CameraData ClientAPI::ParseJSONObject(std::string sJSONObject)
     return retCamData;
 }
 
+void EscapeCharacterDecode (std::string *message)
+{
+    CkStringBuilder sb;
+    sb.Append(message->c_str());
+    //std::cout << "\r\n" << "RAW    : " << *message << "\r\n";
+    sb.Decode("json","utf-8");
+    sb.Decode("json","utf-8");      //Decode twice to get accurate string
+    //std::cout << "\r\n" << "DECODED: " << sb.getAsString() << "\r\n";
+    *message = sb.getAsString();
+    //std::cout << "\r\n" << "RETURN : " << *message << "\r\n";
+}
+
 std::string ClientAPI::CurlExecute(std::string url, std::string type, std::string data)
 {
     //std::string sLogContent = "[ClientAPI]URL: " + url;
@@ -171,11 +184,12 @@ std::string ClientAPI::CurlExecute(std::string url, std::string type, std::strin
     curl_easy_setopt(curl, CURLOPT_WRITEDATA, &readBuffer);
     res = curl_easy_perform(curl);
     curl_easy_cleanup(curl);
-    readBuffer.erase(std::remove(readBuffer.begin(), readBuffer.end(), '\\'), readBuffer.end());
+    //readBuffer.erase(std::remove(readBuffer.begin(), readBuffer.end(), '\\'), readBuffer.end());
     //std::cout << readBuffer << std::endl;
+    EscapeCharacterDecode(&readBuffer);
   }
 
-    Log(LOG_INFO, readBuffer);
+    //Log(LOG_INFO, readBuffer);
 
   return readBuffer;
 

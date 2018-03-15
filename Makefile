@@ -1,5 +1,5 @@
-CFLAGS=-Wall -ggdb -ILogging -ISerialize -IUnits -IUtilities -Ilib/mosq/cpp  -Ilib/mosq
-LDFLAGS=-Llib lib/mosq/cpp/libmosquittopp.so.1 lib/mosq/libmosquitto.so.1 -lpthread
+CFLAGS=-Wall -ggdb -ILogging -ISerialize -IUnits -IUtilities -Ilib/mosq/cpp  -Ilib/mosq -Ilib/chilkat
+LDFLAGS=-Llib -Llib/chilkat lib/mosq/cpp/libmosquittopp.so.1 lib/mosq/libmosquitto.so.1 -lpthread -lchilkat-9.5.0 -lresolv
 
 DIRS=Logging Serialize Units
 
