@@ -12,6 +12,7 @@ Xử lý tác vụ của camera
 
 ///****************  INCLUDE ***************///
 #include "CameraHandler.h"
+#include "Logging.h"
 #include <iostream>
 #include <experimental/filesystem>
 namespace fs = std::experimental::filesystem;
@@ -90,7 +91,7 @@ void *CameraHandler::CaptureThread(void *args)
 // Return: None
 CaptureResult CameraHandler::CaptureImage()
 {
-
+    
     if (!m_pCamData->GetMainURL().empty())
     {
         try
@@ -156,11 +157,16 @@ int CameraHandler::CaptureImage(CameraData *pCamData)
     CaptureResult returncode = CaptureImage();
     if (returncode)
     {
-        std::cout << "Capture CamID" << pCamData->GetCamID() << " fail, return: " << returncode << std::endl;
+        //std::cout << "Capture CamID" << pCamData->GetCamID() << " fail, return: " << returncode << std::endl;
+        std::string sLogContent = "Capture BellID: " + pCamData->GetBellID() + ", CamID: " + pCamData->GetCamID();
+	    sLogContent += " FAIL, return code: " + std::to_string(returncode);
+	    Log(LOG_INFO,sLogContent);
         return returncode;
     }; // Đơn luồng
     // Lưu hình
     //SaveImage();
-    std::cout << "Capture success: " << pCamData->GetCamID() << std::endl;
+    //std::cout << "Capture success: " << pCamData->GetCamID() << std::endl;
+    std::string sLogContent = "Capture BellID: " + pCamData->GetBellID() + ", CamID: " + pCamData->GetCamID() + " success";
+	Log(LOG_INFO,sLogContent);
     return 0;
 }

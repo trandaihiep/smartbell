@@ -21,7 +21,7 @@ extern MQTTConnector *  	m_pComControl;
 ///************** MAIN PROCESS **************///
 int main(void)
 {
-	Log(LOG_INFO, "Start!!!");
+	//Log(LOG_INFO, "Start!!!");
 	// Khởi tạo dữ liệu
 	InitializeData();
 	// Xử lý dữ liệu
@@ -45,7 +45,7 @@ int main(void)
 void InitializeData(){
 	// Thiết lập việc ghi log
 
-	Log(LOG_INFO, "InitializeData...");
+	//Log(LOG_INFO, "InitializeData...");
 	// SetLogLevel(LOG_DISP_WARNING);
 	// SetLogLevel(LOG_DISP_INFO);
 	SetLogLevel(LOG_DISP_DEBUG);
@@ -69,10 +69,9 @@ void InitializeData(){
 	m_pComControl->addHandler(&ReceiveHandler);
 	m_pComControl->loop_start();
 
-	std::string sLogContent = "IP Server: " + sAppServerIP;
+	std::string sLogContent = "\nMQTT Server: " + sAppServerIP;
 	sLogContent += "\nPort: " + std::to_string(nPort);
-	sLogContent += "\nGW Listen: " + g_pSmartBellData->m_dConfig.sGateWayListenAdr;
-	sLogContent += "\nGW Alarm: " + g_pSmartBellData->m_dConfig.sGateWayAlarmAdr;
+	sLogContent += "\nListenning Topic: " + g_pSmartBellData->m_dConfig.sGateWayListenAdr;
 	Log(LOG_INFO,sLogContent);
 
 }
@@ -82,9 +81,9 @@ void InitializeData(){
 //		std::string sReceiveData - Dữ liệu nhận được
 // Return: None
 void ReceiveHandler(std::string sReceiveData){
-	std::string sLogContent = "Receive: " + sReceiveData;
+	std::string sLogContent = "MQTT Receive: " + sReceiveData;
 	//Log(LOG_INFO, sLogContent);
-	Log(LOG_WARNING, sLogContent);
+	Log(LOG_INFO, sLogContent);
 	// Add to queue
 	g_pSmartBellData->PushBellData (sReceiveData);
 	// Xử lý dữ liệu
